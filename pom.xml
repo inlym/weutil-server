@@ -15,6 +15,7 @@
     <!-- ===== 子模块声明：控制参与构建与发布的模块列表 ===== -->
     <modules>
         <module>weutil-common</module>
+        <module>weutil-system</module>
         <module>weutil-bootstrap</module>
     </modules>
 
@@ -171,6 +172,11 @@
             <dependency>
                 <groupId>com.weutil</groupId>
                 <artifactId>weutil-common</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.weutil</groupId>
+                <artifactId>weutil-system</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>

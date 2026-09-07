@@ -10,6 +10,7 @@ weutil-server 是「小鸣助手」项目的服务端。
 ```
 weutil-server/
 ├── weutil-common/                 # 通用模块（全局配置、基础设施）
+├── weutil-system/                 # 系统运行模块（与业务无关的系统级功能）
 └── weutil-bootstrap/              # 启动模块（主类、端口 35125、profile: local）
 ```
 
