@@ -1,5 +1,6 @@
 package com.weutil.bootstrap;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +16,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 2026-09-07
  */
 @SpringBootApplication(scanBasePackages = {"com.weutil.**"})
-@MapperScan(basePackages = {"com.weutil.**.mapper"})
+@MapperScan(basePackages = {"com.weutil"}, annotationClass = Mapper.class)
 public class Application {
 
     /**
@@ -26,7 +27,7 @@ public class Application {
      *
      * @param args 命令行参数
      */
-    public static void main(String[] args) {
+    static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 }
