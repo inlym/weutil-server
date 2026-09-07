@@ -1,24 +1,28 @@
-# Compiled class file
-*.class
+# Maven 构建产物
+target/
+**/target/
 
-# Log file
+# IDE 配置文件
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# 日志文件
+logs/
 *.log
 
-# BlueJ files
-*.ctxt
+# 临时文件
+temp/
+**/temp/
+**/临时/
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# macOS 系统文件
+.DS_Store
+.DS_Store?
 
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
+# Maven 插件生成文件
+.flattened-pom.xml
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
+# 环境差异化配置文件（含数据库密码等敏感连接信息，仅本地保留，不入库）
+application-*.yml

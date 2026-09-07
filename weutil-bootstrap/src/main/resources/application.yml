@@ -1,0 +1,164 @@
+# 服务端主配置文件
+# 包含所有环境通用的配置项，环境差异化配置由本地创建的 application-*.yml 覆盖（该类文件不入库）
+
+# Spring 框架配置
+spring:
+    # Spring 环境配置
+    profiles:
+        # 激活的配置文件，默认为本地开发环境
+        active: local
+
+    # 主应用配置
+    main:
+        # 关闭 Spring Boot 启动 banner，减少控制台输出
+        banner-mode: off
+
+    # 输出配置
+    output:
+        # ANSI 彩色输出配置，提升开发体验
+        ansi:
+            # 始终启用彩色输出，便于日志查看和调试
+            enabled: ALWAYS
+
+    # 生命周期配置
+    lifecycle:
+        # 每个关闭阶段的超时时间（秒）
+        timeout-per-shutdown-phase: 60s
+
+    # 线程配置
+    threads:
+        # 虚拟线程配置
+        virtual:
+            # 启用虚拟线程（Java 25+）
+            enabled: true
+
+    # 自动配置排除项
+    autoconfigure:
+        # 需要排除的自动配置类列表
+        exclude:
+            # 排除 Spring Security 默认用户详情服务自动配置，避免生成默认密码的警告
+            - org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration
+
+    # Spring Cache 缓存配置
+    cache:
+        # 缓存类型，使用 Redis 作为缓存实现
+        type: redis
+
+    # 应用基本信息
+    application:
+        # 应用名称，用于服务注册和监控标识
+        name: "weutil-server-local"
+
+    # 数据源配置
+    datasource:
+        # 数据库连接 URL
+        url: jdbc:mysql://127.0.0.1:3306/weutil_db_dev?useSSL=false&serverTimezone=UTC&characterEncoding=utf8&autoReconnect=true&connectTimeout=5000&socketTimeout=30000
+        # 数据库用户名
+        username: "root"
+        # 数据库密码
+        password: "请填入数据库密码"
+        # HikariCP 连接池配置（高性能 JDBC 连接池）
+        hikari:
+            # 连接池名称，便于监控和问题排查时识别
+            pool-name: HikariPoolLocal
+            # 连接池最大连接数，建议 = CPU 核心数 * 2 + 磁盘数
+            maximum-pool-size: 20
+            # 连接池最小空闲连接数，建议 = maximum-pool-size / 2
+            minimum-idle: 10
+            # 获取连接的超时时间（毫秒），网络不稳定时适当增加
+            connection-timeout: 3000
+            # 连接最大存活时间（毫秒），必须小于 MySQL wait_timeout
+            max-lifetime: 1500000
+            # 连接保活时间（毫秒），定期验证空闲连接
+            keepalive-time: 120000
+            # 连接验证超时时间（毫秒）
+            validation-timeout: 3000
+            # 连接泄漏检测阈值（毫秒），超过此时间未归还连接将记录警告
+            leak-detection-threshold: 60000
+
+    # Spring Data 配置
+    data:
+        # Redis 缓存配置
+        redis:
+            # Redis 服务器地址
+            host: "127.0.0.1"
+            # Redis 数据库编号
+            database: 0
+            # Redis 服务端口
+            port: 6379
+            # Redis 访问密码（无密码时保持注释状态）
+            # password: "请填入 Redis 密码"
+            # 连接超时时间（毫秒）
+            connect-timeout: 2000
+            # 命令执行超时时间（毫秒）
+            timeout: 20000
+
+    # Spring AI 配置
+    ai:
+        # OpenAI 配置
+        openai:
+            # OpenAI API 密钥（引用 weutil.openai.api-key）
+            api-key: ${weutil.openai.api-key}
+            # OpenAI Embedding 模型配置
+            embedding:
+                # Embedding 模型名称
+                model: "text-embedding-3-small"
+
+# 服务器配置
+server:
+    # 服务端口
+    port: 35125
+    # 优雅关闭配置
+    shutdown: graceful
+
+# 日志配置
+logging:
+    # 日志级别配置
+    level:
+        # 项目根包日志级别
+        com.weutil: TRACE
+    # 日志文件存储目录，macOS 无 /var/log 写权限，改用项目本地目录
+    file:
+        path: ./logs
+
+# 应用配置
+weutil:
+    # OpenAI 集成配置
+    openai:
+        # OpenAI API 密钥
+        api-key: "请填入 OpenAI API 密钥"
+
+# Spring Boot Actuator 监控配置
+management:
+    # 端点 Web 暴露配置
+    endpoints:
+        web:
+            exposure:
+                # 暴露的端点列表，"*" 表示全部暴露（本地开发环境便于调试，上线环境应收窄）
+                include: "*"
+
+    # 单端点配置
+    endpoint:
+        health:
+            # 始终展示组件细节，包含各 HealthIndicator 的 status 与 detail 字段，便于本地调试
+            show-details: always
+
+    # 指标通用标签，所有 Micrometer 指标都会自动携带，便于在 Prometheus 中按维度聚合
+    metrics:
+        tags:
+            # 应用名标识，多服务场景下区分指标来源
+            application: "weutil-server"
+            # 运行环境标识，便于在 Prometheus 中按环境聚合
+            env: "local"
+
+    # Info 端点贡献者配置
+    info:
+        # 暴露环境变量中以 info.* 开头的属性
+        env:
+            enabled: true
+        # 暴露 JDK 运行时信息
+        java:
+            enabled: true
+        # 暴露操作系统信息
+        os:
+            enabled: true
