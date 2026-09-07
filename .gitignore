@@ -2,8 +2,11 @@
 target/
 **/target/
 
-# IDE 配置文件
-.idea/
+# IDE 配置文件（项目词典共享给团队，需入库）
+.idea/*
+!.idea/dictionaries/
+.idea/dictionaries/*
+!.idea/dictionaries/project.xml
 *.iml
 *.iws
 *.ipr
