@@ -16,6 +16,7 @@
     <modules>
         <module>weutil-common</module>
         <module>weutil-system</module>
+        <module>weutil-account</module>
         <module>weutil-bootstrap</module>
     </modules>
 
@@ -177,6 +178,16 @@
             <dependency>
                 <groupId>com.weutil</groupId>
                 <artifactId>weutil-system</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.weutil</groupId>
+                <artifactId>weutil-account-core</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.weutil</groupId>
+                <artifactId>weutil-account-credential</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>

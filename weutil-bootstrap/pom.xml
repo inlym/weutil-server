@@ -30,6 +30,18 @@
             <artifactId>weutil-system</artifactId>
         </dependency>
 
+        <!-- 账户核心模块 -->
+        <dependency>
+            <groupId>com.weutil</groupId>
+            <artifactId>weutil-account-core</artifactId>
+        </dependency>
+
+        <!-- 账户凭证模块 -->
+        <dependency>
+            <groupId>com.weutil</groupId>
+            <artifactId>weutil-account-credential</artifactId>
+        </dependency>
+
         <!-- Logstash Logback Encoder for JSON structured logging -->
         <dependency>
             <groupId>net.logstash.logback</groupId>
