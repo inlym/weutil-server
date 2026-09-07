@@ -117,6 +117,8 @@ logging:
     level:
         # 项目根包日志级别
         com.weutil: TRACE
+        # Logbook HTTP 请求日志输出 TRACE 级别
+        org.zalando.logbook: TRACE
     # 日志文件存储目录，macOS 无 /var/log 写权限，改用项目本地目录
     file:
         path: ./logs

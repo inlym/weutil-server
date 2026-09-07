@@ -44,6 +44,7 @@
         <hikari.version>5.1.0</hikari.version>
         <guava.version>33.4.0-jre</guava.version>
         <logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
+        <logbook.version>4.0.4</logbook.version>
         <spring-ai.version>2.0.0</spring-ai.version>
         <jsonschema-generator.version>5.0.0</jsonschema-generator.version>
 
@@ -239,6 +240,13 @@
                 <groupId>net.logstash.logback</groupId>
                 <artifactId>logstash-logback-encoder</artifactId>
                 <version>${logstash-logback-encoder.version}</version>
+            </dependency>
+
+            <!-- Logbook -->
+            <dependency>
+                <groupId>org.zalando</groupId>
+                <artifactId>logbook-spring</artifactId>
+                <version>${logbook.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
