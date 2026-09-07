@@ -48,6 +48,12 @@
             <artifactId>weutil-aliyun-sms</artifactId>
         </dependency>
 
+        <!-- 阿里云 OSS 模块 -->
+        <dependency>
+            <groupId>com.weutil</groupId>
+            <artifactId>weutil-aliyun-oss</artifactId>
+        </dependency>
+
         <!-- Logstash Logback Encoder for JSON structured logging -->
         <dependency>
             <groupId>net.logstash.logback</groupId>

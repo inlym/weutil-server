@@ -139,6 +139,13 @@ weutil:
             # 验证码短信模板编码
             template-code: "请填入验证码短信模板编码"
 
+        # 阿里云 OSS 配置
+        oss:
+            # 桶所在地域 ID，SDK 依此拼接接入端点并参与请求 V4 签名
+            region: "请填入桶所在地域 ID"
+            # 用户文件桶名称，存放头像、图片、docx 等用户上传的异构文件
+            bucket-name: "请填入用户文件桶名称"
+
 # Spring Boot Actuator 监控配置
 management:
     # 端点 Web 暴露配置
