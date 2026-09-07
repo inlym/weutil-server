@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ===== 父项目配置：继承统一的依赖与插件管理 ===== -->
+    <parent>
+        <groupId>com.weutil</groupId>
+        <artifactId>weutil-server</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <!-- ===== 模块标识信息：定义当前模块的坐标和说明 ===== -->
+    <artifactId>weutil-integration</artifactId>
+
+    <!-- ===== 聚合打包方式：仅聚合子模块，不产出构件 ===== -->
+    <packaging>pom</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>外部系统集成聚合模块 - 封装第三方服务为内部模块可直接调用的能力</description>
+
+    <!-- ===== 子模块声明：控制参与构建与发布的模块列表 ===== -->
+    <modules>
+        <module>weutil-aliyun</module>
+    </modules>
+
+</project>

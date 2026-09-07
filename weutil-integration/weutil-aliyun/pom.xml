@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ===== 父项目配置：继承集成聚合模块 ===== -->
+    <parent>
+        <groupId>com.weutil</groupId>
+        <artifactId>weutil-integration</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <!-- ===== 模块标识信息：定义当前模块的坐标和说明 ===== -->
+    <artifactId>weutil-aliyun</artifactId>
+
+    <!-- ===== 聚合打包方式：仅聚合子模块，不产出构件 ===== -->
+    <packaging>pom</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>阿里云服务集成聚合模块</description>
+
+    <!-- ===== 公共属性：集中管理阿里云相关依赖版本 ===== -->
+    <properties>
+        <aliyun.sdk.credentials.version>1.0.6</aliyun.sdk.credentials.version>
+        <aliyun.sdk.dysmsapi.version>4.6.0</aliyun.sdk.dysmsapi.version>
+    </properties>
+
+    <!-- ===== 子模块声明：控制参与构建与发布的模块列表 ===== -->
+    <modules>
+        <module>weutil-aliyun-core</module>
+        <module>weutil-aliyun-sms</module>
+    </modules>
+
+    <!-- ===== 依赖版本管理：统一管理阿里云 SDK 版本 ===== -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- 阿里云凭据管理 SDK -->
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>credentials-java</artifactId>
+                <version>${aliyun.sdk.credentials.version}</version>
+            </dependency>
+
+            <!-- 阿里云短信服务 SDK -->
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>dysmsapi20170525</artifactId>
+                <version>${aliyun.sdk.dysmsapi.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>

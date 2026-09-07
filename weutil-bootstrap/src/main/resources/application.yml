@@ -130,6 +130,15 @@ weutil:
         # OpenAI API 密钥
         api-key: "请填入 OpenAI API 密钥"
 
+    # 阿里云集成配置
+    aliyun:
+        # 阿里云短信服务配置
+        sms:
+            # 短信签名，短信开头【】中的内容，需先在阿里云短信控制台申请并通过审核
+            sign-name: "请填入短信签名"
+            # 验证码短信模板编码
+            template-code: "请填入验证码短信模板编码"
+
 # Spring Boot Actuator 监控配置
 management:
     # 端点 Web 暴露配置
