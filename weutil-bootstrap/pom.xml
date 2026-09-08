@@ -30,16 +30,22 @@
             <artifactId>weutil-system</artifactId>
         </dependency>
 
-        <!-- 账户核心模块 -->
+        <!-- 用户核心模块 -->
         <dependency>
             <groupId>com.weutil</groupId>
-            <artifactId>weutil-account-core</artifactId>
+            <artifactId>weutil-user-core</artifactId>
         </dependency>
 
-        <!-- 账户凭证模块 -->
+        <!-- 用户凭证模块 -->
         <dependency>
             <groupId>com.weutil</groupId>
-            <artifactId>weutil-account-credential</artifactId>
+            <artifactId>weutil-user-credential</artifactId>
+        </dependency>
+
+        <!-- 用户设置模块 -->
+        <dependency>
+            <groupId>com.weutil</groupId>
+            <artifactId>weutil-user-setting</artifactId>
         </dependency>
 
         <!-- 阿里云短信模块 -->

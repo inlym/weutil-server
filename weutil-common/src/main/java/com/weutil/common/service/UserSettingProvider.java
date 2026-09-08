@@ -6,8 +6,8 @@ import com.weutil.common.extension.UserSettingDefinition;
  * 用户设置读写接口
  *
  * <h2>说明
- * <p>提供用户设置的读取和写入能力，由 account 模块实现。
- * <p>其他模块通过注入此接口使用设置功能，无需直接依赖 account 模块。
+ * <p>提供用户设置的读取和写入能力，由 user-setting 模块实现。
+ * <p>其他模块通过注入此接口使用设置功能，无需直接依赖 user-setting 模块。
  *
  * @author <a href="https://www.inlym.com">inlym</a>
  * @since 2026-09-07
