@@ -52,29 +52,11 @@ spring:
     # 数据源配置
     datasource:
         # 数据库连接 URL
-        url: jdbc:mysql://127.0.0.1:3306/weutil_db_dev?useSSL=false&serverTimezone=UTC&characterEncoding=utf8&autoReconnect=true&connectTimeout=5000&socketTimeout=30000
+        url: jdbc:mysql://127.0.0.1:3306/weutil_db_dev?useSSL=false&serverTimezone=UTC&characterEncoding=utf8&connectTimeout=5000&socketTimeout=30000
         # 数据库用户名
         username: "root"
         # 数据库密码
         password: "请填入数据库密码"
-        # HikariCP 连接池配置（高性能 JDBC 连接池）
-        hikari:
-            # 连接池名称，便于监控和问题排查时识别
-            pool-name: HikariPoolLocal
-            # 连接池最大连接数，建议 = CPU 核心数 * 2 + 磁盘数
-            maximum-pool-size: 20
-            # 连接池最小空闲连接数，建议 = maximum-pool-size / 2
-            minimum-idle: 10
-            # 获取连接的超时时间（毫秒），网络不稳定时适当增加
-            connection-timeout: 3000
-            # 连接最大存活时间（毫秒），必须小于 MySQL wait_timeout
-            max-lifetime: 1500000
-            # 连接保活时间（毫秒），定期验证空闲连接
-            keepalive-time: 120000
-            # 连接验证超时时间（毫秒）
-            validation-timeout: 3000
-            # 连接泄漏检测阈值（毫秒），超过此时间未归还连接将记录警告
-            leak-detection-threshold: 60000
 
     # Spring Data 配置
     data:
