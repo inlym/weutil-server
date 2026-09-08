@@ -27,16 +27,6 @@ public non-sealed class WsTextMessage extends WsMessage {
     /** 事件名称 */
     private String event;
 
-    /** 消息发送时间 */
+    /** 消息发送时间，由 WebSocketManager 发送时自动补全 */
     private Instant timestamp;
-
-    /**
-     * 创建指定事件的文本消息
-     *
-     * @param event 事件名称
-     * @return 文本消息
-     */
-    public static WsTextMessage of(String event) {
-        return WsTextMessage.builder().event(event).build();
-    }
 }

@@ -1,8 +1,8 @@
 package com.weutil.common.filter;
 
 import com.weutil.common.constants.ContextKeys;
+import com.weutil.common.constants.CustomHttpHeader;
 import jakarta.servlet.FilterChain;
-import org.springframework.util.AntPathMatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ import java.util.UUID;
  *
  * <h2>功能特性
  * <ul>
- *   <li>为每个请求生成唯一的小写 UUID 作为 trace ID</li>
+ *   <li>为每个请求生成唯一的 UUID 作为 trace ID</li>
  *   <li>将 trace ID 存储到 MDC 中，支持日志输出</li>
  *   <li>在响应头中返回 x-trace-id，便于客户端关联</li>
  *   <li>支持异步线程的 MDC 传递</li>
@@ -37,9 +38,6 @@ import java.util.UUID;
 @Slf4j
 @Component
 public class TraceIdFilter extends OncePerRequestFilter implements Ordered {
-
-    /** 链路追踪 ID 响应头键名 */
-    public static final String TRACE_ID_HEADER = "x-trace-id";
 
     /** Ant 路径匹配器 */
     private static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
@@ -104,7 +102,7 @@ public class TraceIdFilter extends OncePerRequestFilter implements Ordered {
 
         try {
             MDC.put(ContextKeys.TRACE_ID, traceId);
-            response.setHeader(TRACE_ID_HEADER, traceId);
+            response.setHeader(CustomHttpHeader.TRACE_ID, traceId);
 
             log.trace("收到请求 {} {}", request.getMethod(), request.getRequestURI());
 
@@ -118,12 +116,12 @@ public class TraceIdFilter extends OncePerRequestFilter implements Ordered {
      * 生成唯一的链路追踪 ID
      *
      * <h3>生成算法
-     * <p>使用标准 UUID 生成器创建唯一标识符，并转换为小写格式
+     * <p>使用标准 UUID 生成器创建唯一标识符（输出本身即为小写格式）
      * <p>确保在分布式环境中生成的 trace ID 具有全局唯一性
      *
-     * @return 标准 UUID 格式的小写链路追踪 ID
+     * @return 标准 UUID 格式的链路追踪 ID
      */
     private String generateTraceId() {
-        return UUID.randomUUID().toString().toLowerCase();
+        return UUID.randomUUID().toString();
     }
 }

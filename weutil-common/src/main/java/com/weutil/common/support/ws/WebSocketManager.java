@@ -118,6 +118,7 @@ public abstract class WebSocketManager {
         sendLockMap.remove(webSocketId);
 
         if (removed == null) {
+            log.trace("会话不存在，跳过移除，会话 ID：{}", webSocketId);
             return;
         }
 

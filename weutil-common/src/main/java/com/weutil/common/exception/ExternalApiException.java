@@ -33,9 +33,9 @@ package com.weutil.common.exception;
  *         } catch (ResourceAccessException e) {
  *             throw new ExternalApiException("外部 API 访问超时", e);
  *         } catch (HttpClientErrorException e) {
- *             throw new ExternalApiException("外部 API 返回客户端错误: " + e.getStatusCode(), e);
+ *             throw new ExternalApiException(String.format("外部 API 返回客户端错误：%s", e.getStatusCode()), e);
  *         } catch (HttpServerErrorException e) {
- *             throw new ExternalApiException("外部 API 服务器错误: " + e.getStatusCode(), e);
+ *             throw new ExternalApiException(String.format("外部 API 服务器错误：%s", e.getStatusCode()), e);
  *         }
  *     }
  * }

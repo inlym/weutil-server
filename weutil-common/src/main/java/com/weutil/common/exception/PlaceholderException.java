@@ -8,7 +8,7 @@ package com.weutil.common.exception;
  *
  * @author <a href="https://www.inlym.com">inlym</a>
  * @since 2026-09-07
- **/
+ */
 public class PlaceholderException extends BaseException {
 
     /**

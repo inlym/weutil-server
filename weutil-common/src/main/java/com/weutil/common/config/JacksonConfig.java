@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author <a href="https://www.inlym.com">inlym</a>
  * @since 2026-09-07
- **/
+ */
 @Configuration
 public class JacksonConfig {
 

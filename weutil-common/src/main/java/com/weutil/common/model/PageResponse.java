@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author <a href="https://www.inlym.com">inlym</a>
  * @since 2026-09-07
- **/
+ */
 @Data
 @Builder
 @NoArgsConstructor

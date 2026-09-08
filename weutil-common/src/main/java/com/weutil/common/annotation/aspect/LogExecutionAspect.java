@@ -54,7 +54,14 @@ public class LogExecutionAspect {
         String logLevel = logExecution.level().toLowerCase();
 
         // 记录方法调用前日志（入参）
-        logStartExecution(targetLogger, displayName, joinPoint.getArgs(), logLevel, signature, logExecution.logParams());
+        logStartExecution(
+            targetLogger,
+            displayName,
+            joinPoint.getArgs(),
+            logLevel,
+            signature,
+            logExecution.logParams()
+        );
 
         // 记录开始时间
         long startTime = System.nanoTime();
@@ -66,7 +73,15 @@ public class LogExecutionAspect {
         long executionTime = (System.nanoTime() - startTime) / 1_000_000;
 
         // 记录方法执行完成日志（返回值 + 耗时）
-        logEndExecution(targetLogger, displayName, executionTime, result, logExecution.logResult(), logLevel, signature.getReturnType());
+        logEndExecution(
+            targetLogger,
+            displayName,
+            executionTime,
+            result,
+            logExecution.logResult(),
+            logLevel,
+            signature.getReturnType()
+        );
 
         return result;
     }

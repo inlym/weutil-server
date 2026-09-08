@@ -1,5 +1,7 @@
 package com.weutil.bootstrap;
 
+import java.util.TimeZone;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -23,11 +25,15 @@ public class Application {
      * 应用程序主入口方法
      *
      * <h3>处理逻辑
-     * <p>启动 Spring Boot 应用程序，初始化应用上下文和所有 Spring 管理的 Bean。
+     * <p>在 Spring 启动前将 JVM 默认时区设置为 UTC，确保 Bean 初始化、
+     * JDBC 连接建立等启动阶段的时间处理即已统一到 UTC。
+     * <p>随后启动 Spring Boot 应用程序，初始化应用上下文和所有 Spring 管理的 Bean。
      *
      * @param args 命令行参数
      */
     static void main(String[] args) {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
         SpringApplication.run(Application.class, args);
     }
 }

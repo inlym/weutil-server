@@ -1,6 +1,6 @@
 package com.weutil.common.util;
 
-import java.util.Random;
+import java.security.SecureRandom;
 
 /**
  * 随机工具类
@@ -9,13 +9,17 @@ import java.util.Random;
  * <p>提供各种类型的随机数据生成功能，包括随机字符串、随机数等。
  * <p>当前支持字母数字混合字符串、小写字母数字字符串、纯数字字符串等随机字符串生成。
  *
+ * <h2>安全说明
+ * <p>统一使用 SecureRandom 作为随机源，输出不可预测，
+ * <p>可安全用于认证令牌、验证码等安全敏感场景。
+ *
  * @author <a href="https://www.inlym.com">inlym</a>
  * @since 2026-09-07
  */
 public final class RandomUtils {
 
-    /** 随机数生成器实例 */
-    private static final Random RANDOM = new Random();
+    /** 随机数生成器实例，SecureRandom 线程安全，可全局共享 */
+    private static final SecureRandom RANDOM = new SecureRandom();
 
     /** 字母数字字符集 */
     private static final String ALPHANUMERIC_CHAR_SET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -36,7 +40,7 @@ public final class RandomUtils {
      *
      * <h3>生成方法
      * <p>生成指定长度的随机字符串，包含大小写英文字母（A-Z, a-z）和数字（0-9）。
-     * <p>使用 Random 确保随机性，适用于生成验证令牌、临时密码等场景。
+     * <p>使用 SecureRandom 确保不可预测性，适用于生成认证令牌、临时密码等安全敏感场景。
      *
      * @param length 字符串长度
      * @return 指定长度的随机字母数字字符串
@@ -60,7 +64,7 @@ public final class RandomUtils {
      *
      * <h3>生成方法
      * <p>生成指定长度的随机字符串，包含小写英文字母（a-z）和数字（0-9）。
-     * <p>使用 Random 确保随机性，适用于生成邀请码、优惠码、短链接标识等场景。
+     * <p>使用 SecureRandom 确保不可预测性，适用于生成邀请码、优惠码、短链接标识等场景。
      *
      * @param length 字符串长度
      * @return 指定长度的随机小写字母数字字符串
@@ -84,7 +88,7 @@ public final class RandomUtils {
      *
      * <h3>生成方法
      * <p>生成指定长度的随机数字字符串，仅包含数字（0-9）。
-     * <p>使用 Random 确保随机性，适用于生成数字验证码、短信验证码等场景。
+     * <p>使用 SecureRandom 确保不可预测性，适用于生成数字验证码、短信验证码等场景。
      *
      * @param length 字符串长度
      * @return 指定长度的随机数字字符串

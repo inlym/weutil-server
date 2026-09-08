@@ -1,5 +1,6 @@
 package com.weutil.common.support.ai;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClientRequest;
 import org.springframework.ai.chat.client.ChatClientResponse;
 import org.springframework.ai.chat.client.advisor.api.AdvisorChain;
@@ -29,10 +30,14 @@ import java.util.Map;
  * @author <a href="https://www.inlym.com">inlym</a>
  * @since 2026-09-07
  */
+@Slf4j
 public class FinishReasonAdvisor implements BaseAdvisor {
 
     /** Advisor 执行顺序，设置为 0 确保在 ChatModelCallAdvisor 之前执行 */
     private static final int ORDER = 0;
+
+    /** 合入 AssistantMessage.metadata 时使用的停止原因键名 */
+    private static final String FINISH_REASON_KEY = "finishReason";
 
     // ================================ public 方法 ================================
 
@@ -97,8 +102,9 @@ public class FinishReasonAdvisor implements BaseAdvisor {
     ) {
         ChatResponse chatResponse = chatClientResponse.chatResponse();
 
-        // 若无响应，直接返回
+        // 无响应体时无需合入停止原因
         if (chatResponse == null) {
+            log.trace("聊天响应为空，跳过停止原因合入");
             return chatClientResponse;
         }
 
@@ -114,7 +120,7 @@ public class FinishReasonAdvisor implements BaseAdvisor {
             // 合入 finishReason 到 AssistantMessage.metadata
             Map<String, Object> enrichedMetadata = new HashMap<>(originalMsg.getMetadata());
             if (finishReason != null) {
-                enrichedMetadata.put("finishReason", finishReason);
+                enrichedMetadata.put(FINISH_REASON_KEY, finishReason);
             }
 
             // 重建 AssistantMessage，设置合入后的 metadata

@@ -36,4 +36,14 @@ public class SystemConfigurationException extends BaseException {
     public SystemConfigurationException(String message) {
         super(message);
     }
+
+    /**
+     * 构造方法
+     *
+     * @param message 详细错误消息
+     * @param cause   原始异常
+     */
+    public SystemConfigurationException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

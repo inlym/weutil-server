@@ -203,21 +203,21 @@ public final class LogUtils {
      *   <li>n: 字符串的字符数</li>
      *   <li>content: 字符串内容预览
      *       <ul>
-     *         <li>少于60字符：完整展示所有内容</li>
-     *         <li>大于等于60字符：仅展示前20个和后20个字符，中间用 {@code ...} 分隔</li>
+     *         <li>少于 200 字符：完整展示所有内容</li>
+     *         <li>大于等于 200 字符：仅展示前 100 个和后 100 个字符，中间用 {@code ......} 分隔</li>
      *       </ul>
      *   </li>
      * </ul>
      *
      * <h3>使用示例
      * <pre>{@code
-     * // 少于60字符
+     * // 少于 200 字符
      * format("hello")
      * // 输出: String[5](hello)
      *
-     * // 大于等于60字符
-     * format("hello world, this is a test string with more than sixty characters")
-     * // 输出: String[70](hello world, this is a ... ixty characters)
+     * // 大于等于 200 字符
+     * format("超过 200 字符的长文本")
+     * // 输出: String[300](前100字符......后100字符)
      * }</pre>
      *
      * @param str 待格式化的字符串

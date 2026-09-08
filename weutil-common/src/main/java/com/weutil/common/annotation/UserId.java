@@ -13,8 +13,8 @@ import java.lang.annotation.Target;
  * <p>在控制器方法的参数中注入用户 ID，以便在方法内部快捷获取和使用。
  *
  * <h2>注意事项
- * <li> 需要结合 {@code @UserPermission} 注解使用（登录鉴权通过才会有用户 ID）。
- * <li> 在控制器方法参数注入 {@code @UserId long userId}。
+ * <p>需要结合 {@code @UserPermission} 注解使用（登录鉴权通过才会有用户 ID）。
+ * <p>在控制器方法参数注入 {@code @UserId long userId}。
  *
  * @author <a href="https://www.inlym.com">inlym</a>
  * @since 2026-09-07
@@ -23,5 +23,4 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface UserId {
-    String value() default "";
 }

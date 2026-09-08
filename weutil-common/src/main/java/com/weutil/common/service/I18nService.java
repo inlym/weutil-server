@@ -46,17 +46,17 @@ public class I18nService {
      * 获取带参数的国际化消息
      *
      * <h3>占位符格式
-     * <p>资源文件中使用 {0}, {1}, {2}... 表示占位符，按参数数组索引替换。
+     * <p>资源文件中使用 {0}, {1}, {2}... 表示占位符，按参数顺序替换。
      * <p>示例：welcome.message=Welcome {0}, your account balance is {1}
      *
      * <h3>异常行为
      * <p>消息键不存在时抛出 NoSuchMessageException，由调用方保证键值有效。
      *
      * @param key  消息键，对应资源文件中的键名
-     * @param args 参数数组，用于替换消息中的占位符
+     * @param args 占位符参数，用于替换消息中的 {n} 占位符
      * @return 本地化消息内容
      */
-    public String getMessage(@NotBlank String key, Object[] args) {
+    public String getMessage(@NotBlank String key, Object... args) {
         return doGetMessage(key, args, LocaleContextHolder.getLocale());
     }
 

@@ -4,8 +4,6 @@ import com.weutil.common.annotation.LogExecution;
 import com.weutil.common.exception.PageCursorInvalidException;
 import com.weutil.common.model.PageCursor;
 import com.weutil.common.util.RandomUtils;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -23,28 +21,24 @@ import java.time.Instant;
  * @since 2026-09-07
  */
 @Service
-@Slf4j
-@RequiredArgsConstructor
 public class PageCursorService {
 
     /** 有效期 1 天 */
     private static final Duration VALIDITY_PERIOD = Duration.ofDays(1);
 
-    /** Redis 模板服务 */
-    private final RedisTemplateService redisTemplateService;
+    /** 分页游标专用 Redis 模板，构造时创建一次，避免每次读写重复构建 */
+    private final RedisTemplate<String, PageCursor> redisTemplate;
 
     /**
-     * 构造 Redis key
+     * 构造分页游标服务
      *
-     * <h3>构造规则
-     * <p>根据游标值构造 Redis 存储的 key，格式为：page_cursor:{cursor}
-     *
-     * @param cursor 游标值
-     * @return Redis key
+     * @param redisTemplateService Redis 模板服务
      */
-    private String buildRedisKey(String cursor) {
-        return "page_cursor:" + cursor;
+    public PageCursorService(RedisTemplateService redisTemplateService) {
+        this.redisTemplate = redisTemplateService.createRedisTemplate(PageCursor.class);
     }
+
+    // ================================ public 方法 ================================
 
     /**
      * 载入分页游标
@@ -59,12 +53,8 @@ public class PageCursorService {
      */
     @LogExecution
     public PageCursor load(String cursor) {
-        // 创建 PageCursor 类型的 RedisTemplate
-        RedisTemplate<String, PageCursor> redisTemplate = redisTemplateService.createRedisTemplate(PageCursor.class);
-
         // 从 Redis 中获取游标信息
-        String redisKey = buildRedisKey(cursor);
-        PageCursor pageCursor = redisTemplate.opsForValue().get(redisKey);
+        PageCursor pageCursor = redisTemplate.opsForValue().get(buildRedisKey(cursor));
 
         // 验证游标是否存在
         if (pageCursor == null) {
@@ -97,13 +87,24 @@ public class PageCursorService {
             .cursor(cursor)
             .build();
 
-        // 创建 PageCursor 类型的 RedisTemplate
-        RedisTemplate<String, PageCursor> redisTemplate = redisTemplateService.createRedisTemplate(PageCursor.class);
-
         // 保存游标信息到 Redis，设置 1 天过期时间
-        String redisKey = buildRedisKey(cursor);
-        redisTemplate.opsForValue().set(redisKey, pageCursor, VALIDITY_PERIOD);
+        redisTemplate.opsForValue().set(buildRedisKey(cursor), pageCursor, VALIDITY_PERIOD);
 
         return cursor;
+    }
+
+    // ================================ private 方法 ================================
+
+    /**
+     * 构造 Redis key
+     *
+     * <h3>构造规则
+     * <p>根据游标值构造 Redis 存储的 key，格式为：page_cursor:{cursor}
+     *
+     * @param cursor 游标值
+     * @return Redis key
+     */
+    private String buildRedisKey(String cursor) {
+        return "page_cursor:" + cursor;
     }
 }

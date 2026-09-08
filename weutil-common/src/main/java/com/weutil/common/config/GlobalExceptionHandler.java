@@ -64,8 +64,9 @@ public class GlobalExceptionHandler {
      * 处理访问拒绝异常
      *
      * <h3>方法说明
-     * <p>当已认证用户访问需要特定权限的资源但权限不足时触发。
-     * <p>通常由 Spring Security 的 {@code @Secured} 注解检查失败时抛出。
+     * <p>当未携带有效登录信息访问需要登录的接口时触发，对应"未登录"场景。
+     * <p>通常由 Spring Security 的 {@code @Secured} 注解检查失败时抛出，
+     * 本项目 {@code @UserPermission} 注解语义为"需要登录"，故返回 401 与未登录文案。
      *
      * @param e 访问拒绝异常
      * @return 错误响应，HTTP 状态码 401，错误码为 5
@@ -74,7 +75,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ErrorResponse handleAccessDenied(AccessDeniedException e) {
         log.warn("访问拒绝: {}", e.getMessage());
-        return new ErrorResponse(5, "response.auth.permission_denied");
+        return new ErrorResponse(5, "response.auth.not_login");
     }
 
     /**
@@ -345,7 +346,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ErrorResponse handleGenericException(Exception e) {
         log.error("未处理的异常", e);
-
         return new ErrorResponse(1, "response.server.error");
     }
 }

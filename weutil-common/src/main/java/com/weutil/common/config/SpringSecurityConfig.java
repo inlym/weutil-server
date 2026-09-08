@@ -50,11 +50,12 @@ public class SpringSecurityConfig {
      * <p>禁用表单登录、HTTP Basic、CSRF、匿名认证和会话管理，适配无状态 API 架构。
      * <p>显式关闭 frameOptions 和 HSTS 响应头，避免对 API 响应产生无意义限制。
      *
-     * @param http HttpSecurity 配置对象
+     * @param http                  HttpSecurity 配置对象
+     * @param corsConfigurationSource CORS 配置源 Bean
      * @return 配置好的安全过滤器链
      */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) {
         http
             // 关闭 form 表单认证，禁用基于表单的用户名密码登录方式
             .formLogin(AbstractHttpConfigurer::disable)
@@ -76,7 +77,7 @@ public class SpringSecurityConfig {
                 .httpStrictTransportSecurity(HeadersConfigurer.HstsConfig::disable)
             )
             // 配置 CORS，使用统一的 CorsConfigurationSource Bean
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .cors(cors -> cors.configurationSource(corsConfigurationSource))
             // 配置所有请求路径允许匿名访问
             .authorizeHttpRequests(registry -> registry.anyRequest().permitAll());
 
@@ -87,7 +88,7 @@ public class SpringSecurityConfig {
      * 创建 CORS 配置源
      *
      * <h3>配置说明
-     * <p>允许所有来源跨域访问，支持常用 HTTP 方法，预检请求缓存 10 天。
+     * <p>允许所有来源跨域访问，支持路径规范允许的全部 HTTP 方法，预检请求缓存 10 天。
      *
      * @return CORS 配置源
      */
@@ -99,6 +100,7 @@ public class SpringSecurityConfig {
         configuration.addAllowedMethod("POST");
         configuration.addAllowedMethod("PUT");
         configuration.addAllowedMethod("DELETE");
+        configuration.addAllowedMethod("PATCH");
         configuration.addAllowedHeader("*");
         configuration.setMaxAge(864000L);
 

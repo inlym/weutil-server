@@ -32,7 +32,7 @@ public class UserIdMethodArgumentResolver implements HandlerMethodArgumentResolv
      */
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterType().isAssignableFrom(long.class) &&
+        return long.class == parameter.getParameterType() &&
             parameter.hasParameterAnnotation(UserId.class);
     }
 

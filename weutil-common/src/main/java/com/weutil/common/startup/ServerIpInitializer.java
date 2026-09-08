@@ -73,7 +73,7 @@ public class ServerIpInitializer implements ApplicationRunner {
      * 获取服务器内网 IP 地址
      *
      * <h3>处理逻辑
-     * <p>遍历所有网络接口，筛选有效网卡并获取 IPv4 私有地址（10.x、192.168.x、172.x）。
+     * <p>遍历所有网络接口，筛选有效网卡并获取 IPv4 私有地址（10.x、192.168.x、172.16-31.x）。
      * <p>过滤掉未启用、回环、虚拟网卡。
      *
      * @return 内网 IP 地址，未找到时返回 "unknown"
@@ -98,21 +98,43 @@ public class ServerIpInitializer implements ApplicationRunner {
 
                     if (addr instanceof Inet4Address && !addr.isLoopbackAddress()) {
                         String ip = addr.getHostAddress();
-                        boolean isPrivate = ip.startsWith("10.") ||
-                            ip.startsWith("192.168.") ||
-                            ip.startsWith("172.");
 
-                        if (isPrivate) {
+                        if (isPrivateIp(ip)) {
                             return ip;
                         }
                     }
                 }
             }
 
+            log.warn("未找到内网 IP 地址，将使用 unknown 作为默认值");
             return "unknown";
         } catch (Exception e) {
+            log.warn("获取内网 IP 地址失败，将使用 unknown 作为默认值", e);
             return "unknown";
         }
+    }
+
+    /**
+     * 判断 IPv4 地址是否为私有地址
+     *
+     * <h3>判断规则
+     * <p>RFC 1918 定义的私有网段：10.0.0.0/8、172.16.0.0/12（即 172.16-31.x.x）、192.168.0.0/16。
+     * <p>172 段仅 16-31 为私有地址，172.0-15.x.x 与 172.32+ 均为公网地址。
+     *
+     * @param ip IPv4 地址字符串
+     * @return 是私有地址返回 true
+     */
+    private boolean isPrivateIp(String ip) {
+        if (ip.startsWith("10.") || ip.startsWith("192.168.")) {
+            return true;
+        }
+
+        if (ip.startsWith("172.")) {
+            int secondSegment = Integer.parseInt(ip.split("\\.")[1]);
+            return secondSegment >= 16 && secondSegment <= 31;
+        }
+
+        return false;
     }
 
     /**

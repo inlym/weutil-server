@@ -12,7 +12,11 @@ package com.weutil.common.constants;
  * @author <a href="https://www.inlym.com">inlym</a>
  * @since 2026-09-07
  */
-public abstract class CustomHttpHeader {
+public final class CustomHttpHeader {
+
+    private CustomHttpHeader() {
+        throw new UnsupportedOperationException("不允许实例化工具类");
+    }
 
     /**
      * 请求 ID
@@ -69,4 +73,12 @@ public abstract class CustomHttpHeader {
      * <p>文本格式示例：`key1=value1; key2=value2; key3=value3`
      */
     public static final String CLIENT_INFO = "x-weutil-client-info";
+
+    /**
+     * 链路追踪 ID
+     *
+     * <h3>字段说明
+     * <p>服务端生成的请求链路追踪 ID，随响应返回，便于客户端反馈问题时关联服务端日志
+     */
+    public static final String TRACE_ID = "x-trace-id";
 }

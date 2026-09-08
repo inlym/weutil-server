@@ -8,9 +8,13 @@ import lombok.NoArgsConstructor;
 /**
  * 标准响应数据
  *
+ * <h2>类说明
+ * <p>所有 HTTP 接口对外的统一响应结构。
+ * <p>由 StandardResponseAdvice 将 ErrorResponse、EmptyResponse 转换生成本对象。
+ *
  * @author <a href="https://www.inlym.com">inlym</a>
  * @since 2026-09-07
- **/
+ */
 @Data
 @Builder
 @NoArgsConstructor
@@ -29,31 +33,4 @@ public class StandardResponse {
      * @example 操作成功
      */
     private String errorMessage;
-
-      /**
-     * 创建成功响应
-     *
-     * <h3>构造方法
-     * <p>用于创建表示操作成功的标准响应对象。错误码固定为 0，表示成功状态。
-     *
-     * @param message 成功消息，提供对操作结果的描述信息
-     * @return 包含成功状态码和指定消息的 StandardResponse 对象
-     */
-    public static StandardResponse success(String message) {
-        return StandardResponse.builder().errorCode(0).errorMessage(message).build();
-    }
-
-    /**
-     * 创建错误响应
-     *
-     * <h3>构造方法
-     * <p>用于创建包含错误码和错误消息的标准错误响应对象。通常用于处理业务逻辑中的异常情况或验证失败场景。
-     *
-     * @param errorCode   错误码，用于标识具体的错误类型，非 0 值表示错误状态
-     * @param errorMessage 错误消息，提供对错误的详细描述信息
-     * @return 包含指定错误码和错误消息的 StandardResponse 对象
-     */
-    public static StandardResponse error(Integer errorCode, String errorMessage) {
-        return StandardResponse.builder().errorCode(errorCode).errorMessage(errorMessage).build();
-    }
 }

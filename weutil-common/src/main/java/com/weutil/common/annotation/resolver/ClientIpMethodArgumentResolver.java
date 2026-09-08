@@ -32,7 +32,7 @@ public class ClientIpMethodArgumentResolver implements HandlerMethodArgumentReso
      */
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterType().isAssignableFrom(String.class) &&
+        return String.class == parameter.getParameterType() &&
             parameter.hasParameterAnnotation(ClientIp.class);
     }
 

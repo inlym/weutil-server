@@ -9,13 +9,15 @@ import java.util.TimeZone;
 
 import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.http.client.ClientHttpRequestFactoryBuilder;
+import org.springframework.boot.http.client.HttpClientSettings;
 import org.springframework.boot.health.contributor.Health;
 import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
 
 /**
@@ -61,14 +63,20 @@ public class SpringActuatorConfig {
     @Bean
     @ConditionalOnMissingBean(name = "internetConnectivityHealthIndicator")
     public HealthIndicator internetConnectivityHealthIndicator() {
+        // 创建独立的 RestClient，配置超时时间防止健康检查无限挂起；
+        // 不复用容器内的 RestClient，避免健康检查流量经过 Logbook 日志拦截器
+        ClientHttpRequestFactory requestFactory = ClientHttpRequestFactoryBuilder
+            .jdk()
+            .build(
+                HttpClientSettings
+                    .defaults()
+                    .withConnectTimeout(Duration.ofSeconds(HEALTH_CHECK_TIMEOUT_SECONDS))
+                    .withReadTimeout(Duration.ofSeconds(HEALTH_CHECK_TIMEOUT_SECONDS))
+            );
+
+        RestClient restClient = RestClient.builder().requestFactory(requestFactory).build();
+
         return () -> {
-            // 创建独立的 RestClient，配置超时时间防止健康检查无限挂起
-            SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-            requestFactory.setConnectTimeout(Duration.ofSeconds(HEALTH_CHECK_TIMEOUT_SECONDS));
-            requestFactory.setReadTimeout(Duration.ofSeconds(HEALTH_CHECK_TIMEOUT_SECONDS));
-
-            RestClient restClient = RestClient.builder().requestFactory(requestFactory).build();
-
             Instant startTime = Instant.now();
 
             HttpStatusCode statusCode;

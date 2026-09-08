@@ -23,7 +23,7 @@ package com.weutil.common.exception;
  *     public User getUser(Long userId) {
  *         User user = userMapper.selectOneByCondition(USER_INFO.ID.eq(userId));
  *         if (user == null) {
- *             throw new UserNotFoundException("用户不存在: userId=" + userId);
+ *             throw new UserNotFoundException(String.format("用户不存在，用户 ID：%d", userId));
  *         }
  *         return user;
  *     }

@@ -16,7 +16,7 @@ import tools.jackson.databind.json.JsonMapper;
  *
  * @author <a href="https://www.inlym.com">inlym</a>
  * @since 2026-09-07
- **/
+ */
 @Service
 @RequiredArgsConstructor
 public class RedisTemplateService {
