@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,7 +33,7 @@ public class RequestEchoVO {
     /**
      * HTTP 请求的路径部分，不含查询字符串
      *
-     * @example /echo/request
+     * @example /request-echoes
      */
     private String path;
 
@@ -58,16 +59,16 @@ public class RequestEchoVO {
     private String clientIp;
 
     /**
-     * HTTP 请求的所有请求头，键为头名称，值为头内容
+     * HTTP 请求的所有请求头，键为头名称，值为该头的所有取值（同名头可能有多个值）
      *
-     * @example {}
+     * @example {"user-agent":["curl/8.0"]}
      */
-    private Map<String, String> headers;
+    private Map<String, List<String>> headers;
 
     /**
      * HTTP 请求的所有查询参数，键为参数名，值为参数值数组
      *
-     * @example {}
+     * @example {"key":["value"]}
      */
     private Map<String, String[]> query;
 

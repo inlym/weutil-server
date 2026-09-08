@@ -1,5 +1,8 @@
 package com.weutil.common.util;
 
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,6 +53,7 @@ public final class LogUtils {
      *   <li>byte[]、BinaryMessage 或 String 类型：调用对应的 format 方法返回结果</li>
      *   <li>TextMessage 类型：调用对应的 format 方法返回结果</li>
      *   <li>PingMessage、PongMessage 类型：直接返回类名</li>
+     *   <li>ServletRequest、ServletResponse、HttpSession 类型：直接返回接口名占位（容器实现类的 toString 无调试价值）</li>
      *   <li>List、Set、Map、Object[] 类型：递归对元素调用 preview 方法，元素数量超过阈值时截断展示</li>
      *   <li>基本类型数组（int[]、long[] 等）：通过反射 API 遍历元素，递归调用 preview 方法</li>
      *   <li>Boolean、Character、Number 及其子类：格式化为 {@code Type(value)} 格式</li>
@@ -75,6 +79,9 @@ public final class LogUtils {
      *
      * preview(pongMessage)
      * // 输出: PongMessage
+     *
+     * preview(httpServletRequest)
+     * // 输出: ServletRequest
      *
      * preview(messageList)
      * // 输出: List[size=2](TextMessage[5](hello), BinaryMessage[1KB])
@@ -107,6 +114,9 @@ public final class LogUtils {
             case BinaryMessage binaryMessage -> format(binaryMessage);
             case PingMessage pingMessage -> format(pingMessage);
             case PongMessage pongMessage -> format(pongMessage);
+            case ServletRequest servletRequest -> "ServletRequest";
+            case ServletResponse servletResponse -> "ServletResponse";
+            case HttpSession httpSession -> "HttpSession";
             case List<?> list -> formatList(list);
             case Set<?> set -> format(set);
             case Map<?, ?> map -> format(map);

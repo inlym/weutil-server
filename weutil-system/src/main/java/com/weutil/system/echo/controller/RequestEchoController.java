@@ -4,14 +4,14 @@ import com.weutil.common.annotation.LogExecution;
 import com.weutil.common.constants.ContextKeys;
 import com.weutil.system.echo.model.RequestEchoVO;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,8 +27,6 @@ import java.util.Map;
  * @since 2026-09-07
  */
 @RestController
-@RequiredArgsConstructor
-@Validated
 public class RequestEchoController {
 
     // ================================ public 方法 ================================
@@ -36,20 +34,28 @@ public class RequestEchoController {
     /**
      * 获取请求详情并原样回显
      * 提取 HTTP 请求的方法、路径、查询字符串、客户端 IP、请求头、查询参数和请求体，封装后原样返回。
+     * 接口不限定 HTTP 方法，便于回显任意方法发起的调试请求。
      *
      * @param request HTTP 请求对象
      * @param body    请求体内容，允许为空
      * @return 请求详情回显对象
      */
     @LogExecution
-    @RequestMapping("/echo/request")
+    @RequestMapping("/request-echoes")
     public RequestEchoVO echoRequest(HttpServletRequest request, @RequestBody(required = false) String body) {
-        // 收集请求头
-        Map<String, String> headers = new HashMap<>();
+        // 收集请求头，同名头可能出现多次，逐一收集所有值
+        Map<String, List<String>> headers = new HashMap<>();
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
-            headers.put(headerName, request.getHeader(headerName));
+
+            List<String> headerValues = new ArrayList<>();
+            Enumeration<String> values = request.getHeaders(headerName);
+            while (values.hasMoreElements()) {
+                headerValues.add(values.nextElement());
+            }
+
+            headers.put(headerName, headerValues);
         }
 
         // 从请求属性获取反向代理解析后的真实客户端 IP，dev 环境未启用解析时为 null
