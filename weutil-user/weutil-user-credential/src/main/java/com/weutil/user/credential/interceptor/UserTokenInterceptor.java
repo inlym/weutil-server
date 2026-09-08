@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
+import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -31,7 +32,8 @@ import java.time.Instant;
  *   <li>检查 handler 是否为 HandlerMethod，不是则直接放行</li>
  *   <li>检查方法是否有 @UserPermission 注解，没有则直接放行</li>
  *   <li>从请求头获取用户令牌并验证，有效则设置 SecurityContext 和请求属性</li>
- *   <li>令牌无效时不设置认证上下文，由 @Secured 注解返回 403 响应</li>
+ *   <li>令牌无效时不设置认证上下文，由 @Secured 注解拒绝访问，
+ *       全局异常处理器转换为 401 未登录响应</li>
  * </ul>
  *
  * @author <a href="https://www.inlym.com">inlym</a>
@@ -74,17 +76,18 @@ public class UserTokenInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        // 从请求头获取用户令牌，无令牌则放行，后续由权限注解拦截
+        // 从请求头获取用户令牌，未携带或为空白则放行，后续由权限注解拦截
         String token = request.getHeader(CustomHttpHeader.USER_TOKEN);
-        if (token == null) {
+        if (!StringUtils.hasText(token)) {
             log.warn("访问用户接口未携带令牌，路径：{}", request.getServletPath());
             return true;
         }
 
+        // 令牌为敏感凭据，禁止写入日志
         // 验证令牌有效性，无效令牌不设置认证上下文
         UserCredential credential = userCredentialService.findValidByToken(token);
         if (credential == null) {
-            log.trace("用户认证失败，令牌无效或已过期：{}", token);
+            log.trace("用户认证失败，令牌无效或已过期");
             return true;
         }
 

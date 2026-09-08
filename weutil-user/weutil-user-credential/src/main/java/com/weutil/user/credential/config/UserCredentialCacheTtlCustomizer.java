@@ -31,7 +31,8 @@ public class UserCredentialCacheTtlCustomizer implements CacheTtlCustomizer {
      *
      * <h3>缓存有效期说明
      * <ul>
-     *   <li>user:credential:token：2 小时，凭证有效期 10 天，缓存过期时凭证可能仍有效</li>
+     *   <li>user:credential:token：2 小时，凭证有效期 30 天（剩余 10 天内自动续期）</li>
+     *   <li>缓存过期时凭证可能仍有效，缓存命中期间实际过期时点最多放宽 2 小时</li>
      * </ul>
      *
      * @return 缓存名称与有效期的映射

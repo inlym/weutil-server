@@ -17,4 +17,4 @@ create table `user_credential`
 
     primary key (`id`),
     unique key `uk_token` (`token`)
-) engine = InnoDB default character set = `utf8mb4` comment = '用户认证凭证实体类';
+) engine = InnoDB default character set = `utf8mb4` comment = '用户认证凭证';

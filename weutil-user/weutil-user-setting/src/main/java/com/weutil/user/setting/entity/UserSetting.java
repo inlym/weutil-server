@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import java.time.Instant;
 
 /**
- * 用户设置实体类
+ * 用户设置
  *
  * <h2>说明
  * <p>存储用户各项偏好设置，采用 key-value 结构，每个用户每个设置项最多一条记录。

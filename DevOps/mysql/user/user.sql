@@ -13,4 +13,4 @@ create table `user`
     `status`          int unsigned    not null default 0 comment '用户状态',
 
     primary key (`id`)
-) engine = InnoDB default character set = `utf8mb4` comment = '用户实体类';
+) engine = InnoDB default character set = `utf8mb4` comment = '用户';

@@ -10,7 +10,6 @@ import com.weutil.common.annotation.LogExecution;
 import com.weutil.common.util.RandomUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
@@ -26,7 +25,6 @@ import java.time.Instant;
  * @author <a href="https://www.inlym.com">inlym</a>
  * @since 2026-09-07
  */
-@Slf4j
 @Service
 @RequiredArgsConstructor
 @Validated
@@ -79,7 +77,7 @@ public class UserService {
      */
     @LogExecution
     public void checkUserStatus(@NotNull Long userId) {
-        // 查询用户，不存在时抛出异常
+        // 加载用户实体，不存在时由内部实现抛出异常
         User user = doGetUserById(userId);
 
         // 根据账号状态抛出对应异常

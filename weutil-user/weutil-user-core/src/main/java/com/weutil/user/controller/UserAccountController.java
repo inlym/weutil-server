@@ -6,8 +6,6 @@ import com.weutil.common.annotation.UserId;
 import com.weutil.common.annotation.UserPermission;
 import com.weutil.common.model.response.EmptyResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,9 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author <a href="https://www.inlym.com">inlym</a>
  * @since 2026-09-07
  */
-@Slf4j
 @RequiredArgsConstructor
-@Validated
 @RestController
 public class UserAccountController {
 
@@ -39,7 +35,7 @@ public class UserAccountController {
      * @return 空响应（实际不会返回，因为会抛出异常促使前端跳转登录页）
      */
     @UserPermission
-    @PostMapping("/account/cancellation")
+    @PostMapping("/accounts/cancellation")
     public EmptyResponse cancelAccount(@UserId long userId) {
         userAccountService.cancelAccount(userId);
 

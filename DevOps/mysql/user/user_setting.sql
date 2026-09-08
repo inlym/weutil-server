@@ -14,4 +14,4 @@ create table `user_setting`
 
     primary key (`id`),
     unique key `uk_user_key` (`user_id`, `setting_key`)
-) engine = InnoDB default character set = `utf8mb4` comment = '用户设置实体类';
+) engine = InnoDB default character set = `utf8mb4` comment = '用户设置';

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import java.time.Instant;
 
 /**
- * 用户实体类
+ * 用户
  *
  * <h2>说明
  * <p>表示系统中的用户基本信息，包含用户的个人资料和账户相关信息。

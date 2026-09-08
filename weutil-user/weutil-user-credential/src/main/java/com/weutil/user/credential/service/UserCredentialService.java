@@ -1,5 +1,6 @@
 package com.weutil.user.credential.service;
 
+import com.mybatisflex.core.update.UpdateChain;
 import com.weutil.user.credential.config.UserCredentialCacheTtlCustomizer;
 import com.weutil.user.credential.entity.UserCredential;
 import com.weutil.user.credential.mapper.UserCredentialMapper;
@@ -114,6 +115,31 @@ public class UserCredentialService {
     }
 
     /**
+     * 吊销用户全部认证凭证
+     *
+     * <h3>处理逻辑
+     * <p>将该用户所有凭证的过期时间批量置为过去时刻，使其全部立即失效。
+     * <p>用于账户注销、封禁等需要立即终止用户会话的场景。
+     *
+     * <h3>缓存策略
+     * <p>吊销按用户维度批量生效，无法按单个令牌精确清除缓存，
+     * <p>因此使用 allEntries 清空该缓存的全部条目，下次查询回源数据库。
+     *
+     * @param userId 用户 ID
+     */
+    @CacheEvict(value = UserCredentialCacheTtlCustomizer.CACHE_USER_CREDENTIAL_TOKEN, allEntries = true)
+    @LogExecution
+    public void revokeByUserId(Long userId) {
+        // 批量按条件置过期，Builder 方式仅支持按主键更新，无法表达此语义
+        UpdateChain.of(UserCredential.class)
+            .set(USER_CREDENTIAL.EXPIRE_TIME, Instant.now().minusSeconds(1))
+            .where(USER_CREDENTIAL.USER_ID.eq(userId))
+            .update();
+
+        log.info("吊销用户全部认证凭证，用户 ID：{}", userId);
+    }
+
+    /**
      * 通过令牌查找有效用户认证凭证
      *
      * <h3>处理逻辑
@@ -123,7 +149,7 @@ public class UserCredentialService {
      * <h3>缓存策略
      * <p>使用 @Cacheable 注解，首次查询时从数据库获取数据并缓存，后续查询直接从缓存返回。
      * <p>缓存名称为 user:credential:token，键为令牌，Redis 键格式为：`user:credential:token:xxx`。
-     * <p>缓存空值，防止缓存穿透攻击。
+     * <p>不缓存空值：令牌为 32 位随机串不可枚举，穿透风险可忽略。
      *
      * @param token 认证令牌，不能为空
      * @return 用户认证凭证实体对象，未找到或已过期时返回 null

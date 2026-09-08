@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import java.time.Instant;
 
 /**
- * 用户认证凭证实体类
+ * 用户认证凭证
  *
  * <h2>说明
  * <p>存储用户身份认证的凭证信息，包含用于用户 API 请求鉴权的令牌数据。

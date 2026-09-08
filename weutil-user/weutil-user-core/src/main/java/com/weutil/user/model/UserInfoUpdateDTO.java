@@ -1,5 +1,6 @@
 package com.weutil.user.model;
 
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,16 +22,18 @@ import lombok.NoArgsConstructor;
 public class UserInfoUpdateDTO {
 
     /**
-     * 用户的显示昵称，用于在界面上展示
+     * 用户的显示昵称，用于在界面上展示，为 null 时表示不修改
      *
      * @example 小明
      */
+    @Size(max = 100)
     private String nickname;
 
     /**
-     * 用户头像图片在对象存储中的存储键名，服务端据此生成访问 URL
+     * 用户头像图片在对象存储中的存储键名，为 null 时表示不修改
      *
      * @example avatars/user/123456.jpg
      */
+    @Size(max = 50)
     private String avatarKey;
 }

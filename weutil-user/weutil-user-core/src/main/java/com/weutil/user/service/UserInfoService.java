@@ -8,7 +8,6 @@ import com.weutil.common.annotation.LogExecution;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -17,12 +16,11 @@ import org.springframework.validation.annotation.Validated;
  *
  * <h2>业务说明
  * <p>提供用户信息的查询和更新功能，用于用户个人资料管理。
- * <p>头像相关能力待对象存储模块引入后提供。
+ * <p>头像访问 URL 的生成与头像键名的转存待对象存储模块接线后实现。
  *
  * @author <a href="https://www.inlym.com">inlym</a>
  * @since 2026-09-07
  */
-@Slf4j
 @Service
 @RequiredArgsConstructor
 @Validated
@@ -41,49 +39,59 @@ public class UserInfoService {
      *
      * <h3>处理逻辑
      * <p>根据用户 ID 查询用户实体。
-     * <p>构建 UserInfoVO 对象并返回，头像访问 URL 待对象存储模块引入后生成。
+     * <p>构建 UserInfoVO 对象并返回，头像访问 URL 待对象存储模块接线后生成。
      *
      * @param userId 用户 ID
      * @return 用户信息 VO，不为 null
      */
     @LogExecution
     public UserInfoVO getUserInfo(long userId) {
-        // 查询用户实体
-        User user = userService.getUserById(userId);
-
-        // 头像访问 URL 待对象存储模块引入后生成，暂只返回昵称
-        return UserInfoVO
-            .builder()
-            .nickname(user.getNickname())
-            .build();
+        return doGetUserInfo(userId);
     }
 
     /**
      * 修改用户信息
      *
      * <h3>处理逻辑
-     * <p>构建待更新的 User 实体对象，仅包含主键 ID 和需要更新的字段。
-     * <p>若昵称不为空，则直接赋值对应字段。
-     * <p>头像键名暂不处理，待对象存储模块引入后实现转存逻辑。
-     * <p>最后调用更新方法将修改持久化到数据库。
+     * <p>以纯 Builder 方式构建仅含主键和待更新字段的专用更新实例并持久化。
+     * <p>昵称为 null 时表示不修改，不加入更新实例。
+     * <p>头像键名暂不处理，待对象存储模块接线后实现转存逻辑。
+     * <p>更新完成后返回最新的用户信息。
      *
      * @param userId 用户 ID
      * @param dto    用户信息更新 DTO
+     * @return 更新后的用户信息 VO，不为 null
      */
     @LogExecution
-    public void updateUserInfo(long userId, @Valid @NotNull UserInfoUpdateDTO dto) {
-        // 构建仅含主键的更新实体，后续按需填充字段
-        User updateUser = User
-            .builder()
-            .id(userId)
-            .build();
-
-        // 昵称不为空时更新昵称
-        String nickname = dto.getNickname();
-        if (nickname != null) {
-            updateUser.setNickname(nickname);
+    public UserInfoVO updateUserInfo(long userId, @Valid @NotNull UserInfoUpdateDTO dto) {
+        // 按需填充待更新字段，null 字段不加入更新实例
+        User.UserBuilder updateUserBuilder = User.builder().id(userId);
+        if (dto.getNickname() != null) {
+            updateUserBuilder.nickname(dto.getNickname());
         }
 
-        userMapper.update(updateUser);
+        // 持久化更新
+        userMapper.update(updateUserBuilder.build());
+
+        return doGetUserInfo(userId);
+    }
+
+    // ================================ private 方法 ================================
+
+    /**
+     * 查询并构建用户信息
+     *
+     * @param userId 用户 ID
+     * @return 用户信息 VO，不为 null
+     */
+    private UserInfoVO doGetUserInfo(long userId) {
+        // 查询用户实体
+        User user = userService.getUserById(userId);
+
+        // 头像访问 URL 待对象存储模块接线后生成，暂只返回昵称
+        return UserInfoVO
+            .builder()
+            .nickname(user.getNickname())
+            .build();
     }
 }

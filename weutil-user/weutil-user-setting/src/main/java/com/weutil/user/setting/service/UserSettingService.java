@@ -57,6 +57,10 @@ public class UserSettingService implements UserSettingProvider {
     /**
      * 设置用户设置值
      *
+     * <h3>并发行为
+     * <p>并发首写会双双落入创建分支，后插入者由唯一索引拦截并报错。
+     * <p>该场景频率极低，不做重试处理。
+     *
      * @param userId     用户 ID
      * @param definition 设置项定义
      * @param value      设置值

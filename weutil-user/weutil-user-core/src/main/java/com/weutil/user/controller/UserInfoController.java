@@ -7,8 +7,6 @@ import com.weutil.common.annotation.UserId;
 import com.weutil.common.annotation.UserPermission;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,9 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author <a href="https://www.inlym.com">inlym</a>
  * @since 2026-09-07
  */
-@Slf4j
 @RequiredArgsConstructor
-@Validated
 @RestController
 public class UserInfoController {
 
@@ -57,7 +53,6 @@ public class UserInfoController {
     @UserPermission
     @PutMapping("/user-info")
     public UserInfoVO updateUserInfo(@UserId long userId, @Valid @RequestBody UserInfoUpdateDTO dto) {
-        userInfoService.updateUserInfo(userId, dto);
-        return userInfoService.getUserInfo(userId);
+        return userInfoService.updateUserInfo(userId, dto);
     }
 }

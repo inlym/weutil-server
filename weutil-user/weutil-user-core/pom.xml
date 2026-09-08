@@ -23,6 +23,12 @@
             <groupId>com.weutil</groupId>
             <artifactId>weutil-common</artifactId>
         </dependency>
+
+        <!-- 用户认证凭证模块（注销账户时吊销凭证） -->
+        <dependency>
+            <groupId>com.weutil</groupId>
+            <artifactId>weutil-user-credential</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
