@@ -5,7 +5,7 @@ package com.weutil.common.exception;
  *
  * <h2>类说明
  * <p>作为项目所有业务异常类的基类，提供统一的异常处理能力。
- * <p>异常只负责传递错误消息，errorCode 和 i18nKey 由异常处理器统一管理。
+ * <p>异常只负责传递错误消息，code 和 i18nKey 由异常处理器统一管理。
  *
  * <h2>使用示例
  * <pre>{@code
@@ -31,9 +31,9 @@ package com.weutil.common.exception;
  *
  * // 3. 在全局异常处理器中处理
  * @ExceptionHandler(UserNotFoundException.class)
- * public ErrorResponse handleUserNotFoundException(UserNotFoundException e) {
+ * public ErrorInfo handleUserNotFoundException(UserNotFoundException e) {
  *     log.warn("用户未找到: {}", e.getMessage());
- *     return new ErrorResponse(1004, "response.user.not_found");
+ *     return new ErrorInfo("USER_NOT_FOUND", "response.user.not_found");
  * }
  * }</pre>
  *

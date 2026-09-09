@@ -73,7 +73,7 @@ weutil-server/
   → `.claude/rules/database/mysql.md`
 
 ### API 规范
-- 业务错误码与 HTTP 状态码的区分规范
+- 响应结构（成功直返、错误嵌套封装）、业务错误码与 HTTP 状态码的区分规范
   → `.claude/rules/api/response.md`
 
 ### Git 规范

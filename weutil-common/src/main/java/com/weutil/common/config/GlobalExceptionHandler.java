@@ -7,7 +7,7 @@ import com.weutil.common.exception.EntityNotFoundException;
 import com.weutil.common.exception.ThirdPartySdkException;
 import com.weutil.common.exception.UnpredictableException;
 import com.weutil.common.exception.WebSocketException;
-import com.weutil.common.model.response.ErrorResponse;
+import com.weutil.common.model.response.ErrorInfo;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,12 +52,11 @@ public class GlobalExceptionHandler {
      * <p>当通过游标（cursor）进行分页查询时，发现游标无效、未找到或与查询条件不匹配时触发。
      *
      * @param e 分页游标无效异常
-     * @return 错误响应，错误码为 6
+     * @return 错误响应，错误码为 INVALID_CURSOR
      */
     @ExceptionHandler(PageCursorInvalidException.class)
-    public ErrorResponse handlePageCursorInvalid(PageCursorInvalidException e) {
-        log.trace("分页游标无效: {}", e.getMessage());
-        return new ErrorResponse(6, "response.cursor.invalid");
+    public ErrorInfo handlePageCursorInvalid(PageCursorInvalidException e) {
+        return new ErrorInfo("INVALID_CURSOR", "response.cursor.invalid");
     }
 
     /**
@@ -69,13 +68,12 @@ public class GlobalExceptionHandler {
      * 本项目 {@code @UserPermission} 注解语义为"需要登录"，故返回 401 与未登录文案。
      *
      * @param e 访问拒绝异常
-     * @return 错误响应，HTTP 状态码 401，错误码为 5
+     * @return 错误响应，HTTP 状态码 401，错误码为 NOT_LOGGED_IN
      */
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(AccessDeniedException.class)
-    public ErrorResponse handleAccessDenied(AccessDeniedException e) {
-        log.warn("访问拒绝: {}", e.getMessage());
-        return new ErrorResponse(5, "response.auth.not_login");
+    public ErrorInfo handleAccessDenied(AccessDeniedException e) {
+        return new ErrorInfo("NOT_LOGGED_IN", "response.auth.not_login");
     }
 
     /**
@@ -85,12 +83,11 @@ public class GlobalExceptionHandler {
      * <p>当请求的路径不存在时触发。
      *
      * @param e 路径不存在异常
-     * @return 错误响应，错误码为 4
+     * @return 错误响应，错误码为 RESOURCE_NOT_FOUND
      */
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ErrorResponse handleNoHandlerFound(NoHandlerFoundException e) {
-        log.trace("请求路径不存在: {}", e.getRequestURL());
-        return new ErrorResponse(4, "response.resource.invalid");
+    public ErrorInfo handleNoHandlerFound(NoHandlerFoundException e) {
+        return new ErrorInfo("RESOURCE_NOT_FOUND", "response.resource.invalid");
     }
 
     /**
@@ -100,12 +97,11 @@ public class GlobalExceptionHandler {
      * <p>当请求的静态资源不存在时触发。
      *
      * @param e 静态资源未找到异常
-     * @return 错误响应，错误码为 4
+     * @return 错误响应，错误码为 RESOURCE_NOT_FOUND
      */
     @ExceptionHandler(NoResourceFoundException.class)
-    public ErrorResponse handleNoResourceFound(NoResourceFoundException e) {
-        log.trace("请求资源不存在: {} {}", e.getHttpMethod(), e.getResourcePath());
-        return new ErrorResponse(4, "response.resource.invalid");
+    public ErrorInfo handleNoResourceFound(NoResourceFoundException e) {
+        return new ErrorInfo("RESOURCE_NOT_FOUND", "response.resource.invalid");
     }
 
     /**
@@ -116,12 +112,11 @@ public class GlobalExceptionHandler {
      * <p>出于安全考虑，两种情况统一返回相同响应，避免泄露实体归属信息。
      *
      * @param e 实体未找到异常
-     * @return 错误响应，错误码为 4
+     * @return 错误响应，错误码为 RESOURCE_NOT_FOUND
      */
     @ExceptionHandler(EntityNotFoundException.class)
-    public ErrorResponse handleEntityNotFound(EntityNotFoundException e) {
-        log.trace("实体未找到: {}", e.getMessage());
-        return new ErrorResponse(4, "response.resource.invalid");
+    public ErrorInfo handleEntityNotFound(EntityNotFoundException e) {
+        return new ErrorInfo("RESOURCE_NOT_FOUND", "response.resource.invalid");
     }
 
     /**
@@ -131,12 +126,11 @@ public class GlobalExceptionHandler {
      * <p>当业务代码主动抛出 {@code IllegalArgumentException} 校验参数合法性失败时触发。
      *
      * @param e 非法参数异常
-     * @return 错误响应，错误码为 3
+     * @return 错误响应，错误码为 INVALID_PARAMETER
      */
     @ExceptionHandler(IllegalArgumentException.class)
-    public ErrorResponse handleIllegalArgument(IllegalArgumentException e) {
-        log.trace("非法参数: {}", e.getMessage());
-        return new ErrorResponse(3, "response.parameter.invalid");
+    public ErrorInfo handleIllegalArgument(IllegalArgumentException e) {
+        return new ErrorInfo("INVALID_PARAMETER", "response.parameter.invalid");
     }
 
     /**
@@ -146,12 +140,11 @@ public class GlobalExceptionHandler {
      * <p>当使用 @RequestBody 注解的参数校验失败时触发。
      *
      * @param e 方法参数校验异常
-     * @return 错误响应，错误码为 3
+     * @return 错误响应，错误码为 INVALID_PARAMETER
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorResponse handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
-        log.trace("请求参数校验失败: {}", e.getMessage());
-        return new ErrorResponse(3, "response.parameter.invalid");
+    public ErrorInfo handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
+        return new ErrorInfo("INVALID_PARAMETER", "response.parameter.invalid");
     }
 
     /**
@@ -161,12 +154,11 @@ public class GlobalExceptionHandler {
      * <p>当表单参数校验失败时触发。
      *
      * @param e 表单绑定异常
-     * @return 错误响应，错误码为 3
+     * @return 错误响应，错误码为 INVALID_PARAMETER
      */
     @ExceptionHandler(BindException.class)
-    public ErrorResponse handleBindException(BindException e) {
-        log.trace("表单参数校验失败: {}", e.getMessage());
-        return new ErrorResponse(3, "response.parameter.invalid");
+    public ErrorInfo handleBindException(BindException e) {
+        return new ErrorInfo("INVALID_PARAMETER", "response.parameter.invalid");
     }
 
     /**
@@ -176,12 +168,11 @@ public class GlobalExceptionHandler {
      * <p>当使用 @Validated 注解进行方法参数校验失败时触发。
      *
      * @param e 约束违反异常
-     * @return 错误响应，错误码为 3
+     * @return 错误响应，错误码为 INVALID_PARAMETER
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public ErrorResponse handleConstraintViolation(ConstraintViolationException e) {
-        log.trace("约束校验失败: {}", e.getMessage());
-        return new ErrorResponse(3, "response.parameter.invalid");
+    public ErrorInfo handleConstraintViolation(ConstraintViolationException e) {
+        return new ErrorInfo("INVALID_PARAMETER", "response.parameter.invalid");
     }
 
     /**
@@ -191,12 +182,11 @@ public class GlobalExceptionHandler {
      * <p>当请求缺少必需的参数时触发。
      *
      * @param e 缺少请求参数异常
-     * @return 错误响应，错误码为 3
+     * @return 错误响应，错误码为 INVALID_PARAMETER
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ErrorResponse handleMissingServletRequestParameter(MissingServletRequestParameterException e) {
-        log.trace("缺少请求参数: {}", e.getMessage());
-        return new ErrorResponse(3, "response.parameter.invalid");
+    public ErrorInfo handleMissingServletRequestParameter(MissingServletRequestParameterException e) {
+        return new ErrorInfo("INVALID_PARAMETER", "response.parameter.invalid");
     }
 
     /**
@@ -206,12 +196,11 @@ public class GlobalExceptionHandler {
      * <p>当请求参数类型与方法参数类型不匹配时触发。
      *
      * @param e 参数类型不匹配异常
-     * @return 错误响应，错误码为 3
+     * @return 错误响应，错误码为 INVALID_PARAMETER
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ErrorResponse handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e) {
-        log.trace("参数类型不匹配: {}", e.getMessage());
-        return new ErrorResponse(3, "response.parameter.invalid");
+    public ErrorInfo handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e) {
+        return new ErrorInfo("INVALID_PARAMETER", "response.parameter.invalid");
     }
 
     /**
@@ -221,12 +210,11 @@ public class GlobalExceptionHandler {
      * <p>当使用了不支持的 HTTP 方法时触发。
      *
      * @param e HTTP 请求方法不支持异常
-     * @return 错误响应，错误码为 3
+     * @return 错误响应，错误码为 INVALID_PARAMETER
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ErrorResponse handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException e) {
-        log.trace("不支持的 HTTP 请求方法: {}", e.getMessage());
-        return new ErrorResponse(3, "response.parameter.invalid");
+    public ErrorInfo handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException e) {
+        return new ErrorInfo("INVALID_PARAMETER", "response.parameter.invalid");
     }
 
     /**
@@ -236,12 +224,11 @@ public class GlobalExceptionHandler {
      * <p>当请求的内容类型不被支持时触发。
      *
      * @param e HTTP 媒体类型不支持异常
-     * @return 错误响应，错误码为 3
+     * @return 错误响应，错误码为 INVALID_PARAMETER
      */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public ErrorResponse handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException e) {
-        log.trace("不支持的内容类型: {}", e.getMessage());
-        return new ErrorResponse(3, "response.parameter.invalid");
+    public ErrorInfo handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException e) {
+        return new ErrorInfo("INVALID_PARAMETER", "response.parameter.invalid");
     }
 
     /**
@@ -251,12 +238,11 @@ public class GlobalExceptionHandler {
      * <p>当请求体格式不正确或无法解析时触发。
      *
      * @param e HTTP 消息不可读异常
-     * @return 错误响应，错误码为 3
+     * @return 错误响应，错误码为 INVALID_PARAMETER
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ErrorResponse handleHttpMessageNotReadable(HttpMessageNotReadableException e) {
-        log.trace("请求消息格式错误: {}", e.getMessage());
-        return new ErrorResponse(3, "response.parameter.invalid");
+    public ErrorInfo handleHttpMessageNotReadable(HttpMessageNotReadableException e) {
+        return new ErrorInfo("INVALID_PARAMETER", "response.parameter.invalid");
     }
 
     /**
@@ -266,12 +252,12 @@ public class GlobalExceptionHandler {
      * <p>当 WebSocket 连接建立、通信过程中出现错误时触发。
      *
      * @param e WebSocket 连接异常
-     * @return 错误响应，错误码为 3001
+     * @return 错误响应，错误码为 WEBSOCKET_ERROR
      */
     @ExceptionHandler(WebSocketException.class)
-    public ErrorResponse handleWebSocketConnection(WebSocketException e) {
+    public ErrorInfo handleWebSocketConnection(WebSocketException e) {
         log.error("WebSocket 连接异常", e);
-        return new ErrorResponse(3001, "response.websocket_connection.error");
+        return new ErrorInfo("WEBSOCKET_ERROR", "response.websocket_connection.error");
     }
 
     /**
@@ -281,12 +267,12 @@ public class GlobalExceptionHandler {
      * <p>当对外发起 API 请求时出现错误时触发。
      *
      * @param e 外部 API 异常
-     * @return 错误响应，错误码为 3002
+     * @return 错误响应，错误码为 EXTERNAL_API_ERROR
      */
     @ExceptionHandler(ExternalApiException.class)
-    public ErrorResponse handleExternalApi(ExternalApiException e) {
+    public ErrorInfo handleExternalApi(ExternalApiException e) {
         log.error("外部 API 异常", e);
-        return new ErrorResponse(3002, "response.external_api.error");
+        return new ErrorInfo("EXTERNAL_API_ERROR", "response.external_api.error");
     }
 
     /**
@@ -296,12 +282,12 @@ public class GlobalExceptionHandler {
      * <p>当调用第三方 SDK 时出现错误时触发。
      *
      * @param e 第三方 SDK 异常
-     * @return 错误响应，错误码为 3003
+     * @return 错误响应，错误码为 THIRD_PARTY_SDK_ERROR
      */
     @ExceptionHandler(ThirdPartySdkException.class)
-    public ErrorResponse handleThirdPartySdk(ThirdPartySdkException e) {
+    public ErrorInfo handleThirdPartySdk(ThirdPartySdkException e) {
         log.error("第三方 SDK 异常", e);
-        return new ErrorResponse(3003, "response.third_party_sdk.error");
+        return new ErrorInfo("THIRD_PARTY_SDK_ERROR", "response.third_party_sdk.error");
     }
 
     /**
@@ -311,12 +297,12 @@ public class GlobalExceptionHandler {
      * <p>用于代码分支结构完整性，实际不应触发此异常。
      *
      * @param e 占位异常
-     * @return 错误响应，错误码为 2001
+     * @return 错误响应，错误码为 PLACEHOLDER_ERROR
      */
     @ExceptionHandler(PlaceholderException.class)
-    public ErrorResponse handlePlaceholder(PlaceholderException e) {
+    public ErrorInfo handlePlaceholder(PlaceholderException e) {
         log.error("占位异常被触发", e);
-        return new ErrorResponse(2001, "response.placeholder.error");
+        return new ErrorInfo("PLACEHOLDER_ERROR", "response.placeholder.error");
     }
 
     /**
@@ -326,12 +312,12 @@ public class GlobalExceptionHandler {
      * <p>当分支判断中出现未考虑到的情况时触发。
      *
      * @param e 意料之外异常
-     * @return 错误响应，错误码为 2002
+     * @return 错误响应，错误码为 UNPREDICTABLE_ERROR
      */
     @ExceptionHandler(UnpredictableException.class)
-    public ErrorResponse handleUnpredictable(UnpredictableException e) {
+    public ErrorInfo handleUnpredictable(UnpredictableException e) {
         log.error("意料之外异常", e);
-        return new ErrorResponse(2002, "response.unpredictable.error");
+        return new ErrorInfo("UNPREDICTABLE_ERROR", "response.unpredictable.error");
     }
 
     /**
@@ -341,11 +327,11 @@ public class GlobalExceptionHandler {
      * <p>作为最后的异常处理器，捕获所有未被上述方法处理的其他异常。
      *
      * @param e 通用异常
-     * @return 错误响应，错误码为 1
+     * @return 错误响应，错误码为 SERVER_ERROR
      */
     @ExceptionHandler(Exception.class)
-    public ErrorResponse handleGenericException(Exception e) {
+    public ErrorInfo handleGenericException(Exception e) {
         log.error("未处理的异常", e);
-        return new ErrorResponse(1, "response.server.error");
+        return new ErrorInfo("SERVER_ERROR", "response.server.error");
     }
 }

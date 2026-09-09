@@ -3,9 +3,8 @@ package com.weutil.user.config;
 import com.weutil.user.exception.AccountCancelledException;
 import com.weutil.user.exception.AccountLockedException;
 import com.weutil.user.exception.UserNotFoundException;
-import com.weutil.common.model.response.ErrorResponse;
+import com.weutil.common.model.response.ErrorInfo;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * @author <a href="https://www.inlym.com">inlym</a>
  * @since 2026-09-07
  */
-@Slf4j
 @RequiredArgsConstructor
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -35,12 +33,11 @@ public class UserExceptionHandler {
      * <p>当通过用户 ID 查询用户时未找到对应的记录时触发。
      *
      * @param e 用户未找到异常
-     * @return 错误响应，错误码为 101
+     * @return 错误响应，错误码为 ACCOUNT_ABNORMAL
      */
     @ExceptionHandler(UserNotFoundException.class)
-    public ErrorResponse handleUserNotFound(UserNotFoundException e) {
-        log.trace("用户未找到: {}", e.getMessage());
-        return new ErrorResponse(101, "response.user.account_abnormal");
+    public ErrorInfo handleUserNotFound(UserNotFoundException e) {
+        return new ErrorInfo("ACCOUNT_ABNORMAL", "response.user.account_abnormal");
     }
 
     /**
@@ -50,12 +47,11 @@ public class UserExceptionHandler {
      * <p>当用户账号已注销但仍尝试访问系统时触发。
      *
      * @param e 账号已注销异常
-     * @return 错误响应，错误码为 102
+     * @return 错误响应，错误码为 ACCOUNT_CANCELLED
      */
     @ExceptionHandler(AccountCancelledException.class)
-    public ErrorResponse handleAccountCancelled(AccountCancelledException e) {
-        log.trace("账号已注销: {}", e.getMessage());
-        return new ErrorResponse(102, "response.user.account_cancelled");
+    public ErrorInfo handleAccountCancelled(AccountCancelledException e) {
+        return new ErrorInfo("ACCOUNT_CANCELLED", "response.user.account_cancelled");
     }
 
     /**
@@ -65,11 +61,10 @@ public class UserExceptionHandler {
      * <p>当用户账号已被锁定但仍尝试访问系统时触发。
      *
      * @param e 账号已锁定异常
-     * @return 错误响应，错误码为 103
+     * @return 错误响应，错误码为 ACCOUNT_LOCKED
      */
     @ExceptionHandler(AccountLockedException.class)
-    public ErrorResponse handleAccountLocked(AccountLockedException e) {
-        log.trace("账号已锁定: {}", e.getMessage());
-        return new ErrorResponse(103, "response.user.account_locked");
+    public ErrorInfo handleAccountLocked(AccountLockedException e) {
+        return new ErrorInfo("ACCOUNT_LOCKED", "response.user.account_locked");
     }
 }

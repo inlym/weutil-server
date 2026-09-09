@@ -269,7 +269,7 @@ private User findByUsername(String username) { ... }
 
 当已有注释偏向描述代码行为时，应改写为业务含义，不可删除注释本身。"都必须"意味着注释不可省略，修正路径只有改写措辞。
 
-**例外**：项目内部自建模型类的字段赋值（如 `entity.setField(dto.getField())`）不需要注释，字段名已足够自明。标准响应模式（如 `return EmptyResponse.SUCCESS;`）同理，不构成独立业务步骤，可省略注释。
+**例外**：项目内部自建模型类的字段赋值（如 `entity.setField(dto.getField())`）不需要注释，字段名已足够自明。标准响应构造（如 `return new ErrorInfo("INVALID_CURSOR", "response.cursor.invalid");`）同理，不构成独立业务步骤，可省略注释。
 
 **反例外**：外部模型类（尤其是第三方 SDK 的 Builder，如 AWS SDK）的每个配置项都必须注释说明其业务含义，不可省略。
 

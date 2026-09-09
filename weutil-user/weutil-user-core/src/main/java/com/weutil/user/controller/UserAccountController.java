@@ -4,7 +4,6 @@ import com.weutil.user.exception.AccountCancelledException;
 import com.weutil.user.service.UserAccountService;
 import com.weutil.common.annotation.UserId;
 import com.weutil.common.annotation.UserPermission;
-import com.weutil.common.model.response.EmptyResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,13 +29,13 @@ public class UserAccountController {
 
     /**
      * 注销账户
+     * 注销完成后抛出异常而非正常返回，由异常处理器返回特定错误码，前端据此清除登录态并跳转登录页。
      *
      * @param userId 当前登录用户 ID
-     * @return 空响应（实际不会返回，因为会抛出异常促使前端跳转登录页）
      */
     @UserPermission
     @PostMapping("/accounts/cancellation")
-    public EmptyResponse cancelAccount(@UserId long userId) {
+    public void cancelAccount(@UserId long userId) {
         userAccountService.cancelAccount(userId);
 
         // 抛出账户已注销异常，促使全局异常处理器返回特定的错误码

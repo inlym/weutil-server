@@ -7,7 +7,7 @@
 - 必须使用 `@RestController`，禁止用 `@Controller + @ResponseBody` 组合
 - 禁止在控制器类上使用 `@RequestMapping`
 - 方法直接返回响应数据，禁止用 `ResponseEntity` 包装
-- 返回值不允许为 `void`，无内容时返回 `EmptyResponse.success()`
+- 无内容时返回值用 `void`，响应体为空
 - 参数校验注解不使用 `message` 字段
 - `@UserId` 必须用 `long` 基本类型，禁止用 `Long`
 - `@RequestBody` 参数类型必须以 `DTO` 结尾，变量名固定为 `dto`
