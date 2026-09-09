@@ -2,6 +2,7 @@ package com.weutil.common.support.ws;
 
 import com.weutil.common.constants.ContextKeys;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.NonNull;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -39,15 +40,17 @@ public class AttributeForwardingInterceptor implements HandshakeInterceptor {
      */
     @Override
     public boolean beforeHandshake(
-        ServerHttpRequest request,
-        ServerHttpResponse response,
-        WebSocketHandler wsHandler,
-        Map<String, Object> attributes
+        @NonNull ServerHttpRequest request,
+        @NonNull ServerHttpResponse response,
+        @NonNull WebSocketHandler wsHandler,
+        @NonNull Map<String, Object> attributes
     ) {
+        // 握手请求均为 Servlet 实现，仅该类型能提取 IP 过滤器写入的请求属性
         if (request instanceof ServletServerHttpRequest servletRequest) {
             HttpServletRequest httpRequest = servletRequest.getServletRequest();
             Object clientIp = httpRequest.getAttribute(ContextKeys.CLIENT_IP);
 
+            // 客户端 IP 为空说明 IP 过滤器未处理该请求，跳过传递
             if (clientIp != null) {
                 attributes.put(ContextKeys.CLIENT_IP, clientIp);
             }
@@ -66,10 +69,10 @@ public class AttributeForwardingInterceptor implements HandshakeInterceptor {
      */
     @Override
     public void afterHandshake(
-        ServerHttpRequest request,
-        ServerHttpResponse response,
-        WebSocketHandler wsHandler,
-        Exception exception
+        @NonNull ServerHttpRequest request,
+        @NonNull ServerHttpResponse response,
+        @NonNull WebSocketHandler wsHandler,
+        @NonNull Exception exception
     ) {
         // 握手后无需额外处理
     }

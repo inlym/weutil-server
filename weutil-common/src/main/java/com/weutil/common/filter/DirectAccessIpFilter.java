@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
@@ -59,7 +60,7 @@ public class DirectAccessIpFilter extends OncePerRequestFilter implements Ordere
      * @return true 表示跳过过滤处理，false 表示执行过滤处理
      */
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
+    protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
         String host = request.getHeader("Host");
         return host == null || !host.contains(":");
     }
@@ -80,9 +81,9 @@ public class DirectAccessIpFilter extends OncePerRequestFilter implements Ordere
      */
     @Override
     protected void doFilterInternal(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        FilterChain filterChain
+        @NonNull HttpServletRequest request,
+        @NonNull HttpServletResponse response,
+        @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
         String clientIp = request.getRemoteAddr();

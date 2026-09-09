@@ -26,16 +26,4 @@ public final class ContextKeys {
 
     /** 用户 ID */
     public static final String USER_ID = "USER_ID";
-
-    /** 设备 ID */
-    public static final String DEVICE_ID = "DEVICE_ID";
-
-    /** 设备编码 */
-    public static final String DEVICE_CODE = "DEVICE_CODE";
-
-    /** 聊天对话 ID */
-    public static final String CHAT_CONVERSATION_ID = "CHAT_CONVERSATION_ID";
-
-    /** 认证令牌 */
-    public static final String TOKEN = "TOKEN";
 }

@@ -6,6 +6,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.core.Ordered;
@@ -28,7 +29,6 @@ import java.util.UUID;
  *   <li>为每个请求生成唯一的 UUID 作为 trace ID</li>
  *   <li>将 trace ID 存储到 MDC 中，支持日志输出</li>
  *   <li>在响应头中返回 x-trace-id，便于客户端关联</li>
- *   <li>支持异步线程的 MDC 传递</li>
  *   <li>确保在过滤器链中最早执行，保证全链路追踪</li>
  * </ul>
  *
@@ -60,14 +60,13 @@ public class TraceIdFilter extends OncePerRequestFilter implements Ordered {
      * 判断是否需要跳过过滤处理
      *
      * <h3>跳过条件
-     * <p>非业务功能路径跳过过滤处理（如 WebSocket、调试接口等）
-     * <p>避免在特殊路径设置不必要的 trace ID
+     * <p>WebSocket 握手路径跳过过滤处理，避免在该路径设置不必要的 trace ID
      *
      * @param request HTTP 请求对象
      * @return true 表示跳过过滤处理，false 表示执行过滤处理
      */
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
+    protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
         String path = request.getServletPath();
         return PATH_MATCHER.match("/ws/**", path);
     }
@@ -94,34 +93,27 @@ public class TraceIdFilter extends OncePerRequestFilter implements Ordered {
      */
     @Override
     protected void doFilterInternal(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        FilterChain filterChain
+        @NonNull HttpServletRequest request,
+        @NonNull HttpServletResponse response,
+        @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        String traceId = generateTraceId();
+        // 生成请求唯一的链路追踪 ID
+        String traceId = UUID.randomUUID().toString();
 
         try {
+            // 将 trace ID 写入日志上下文，使本次请求的所有日志均携带该标识
             MDC.put(ContextKeys.TRACE_ID, traceId);
+
+            // 响应头回传 trace ID，便于客户端反馈问题时关联服务端日志
             response.setHeader(CustomHttpHeader.TRACE_ID, traceId);
 
             log.trace("收到请求 {} {}", request.getMethod(), request.getRequestURI());
 
+            // 继续执行过滤器链
             filterChain.doFilter(request, response);
         } finally {
+            // 清理 MDC 上下文，防止线程池线程复用时 trace ID 泄漏到下一个请求
             MDC.clear();
         }
-    }
-
-    /**
-     * 生成唯一的链路追踪 ID
-     *
-     * <h3>生成算法
-     * <p>使用标准 UUID 生成器创建唯一标识符（输出本身即为小写格式）
-     * <p>确保在分布式环境中生成的 trace ID 具有全局唯一性
-     *
-     * @return 标准 UUID 格式的链路追踪 ID
-     */
-    private String generateTraceId() {
-        return UUID.randomUUID().toString();
     }
 }

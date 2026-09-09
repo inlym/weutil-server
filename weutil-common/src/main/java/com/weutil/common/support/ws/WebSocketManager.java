@@ -1,20 +1,16 @@
 package com.weutil.common.support.ws;
 
 import com.weutil.common.exception.WebSocketException;
-import com.weutil.common.model.ws.WsTextMessage;
-import com.weutil.common.util.JsonUtils;
 import com.weutil.common.util.LogUtils;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.socket.BinaryMessage;
-import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -66,7 +62,7 @@ public abstract class WebSocketManager {
     public void add(@NotNull WebSocketSession session) {
         String webSocketId = session.getId();
         sessionMap.put(webSocketId, session);
-        sendLockMap.computeIfAbsent(webSocketId, k -> new ReentrantLock());
+        sendLockMap.computeIfAbsent(webSocketId, _ -> new ReentrantLock());
 
         log.info("会话已注册，会话 ID：{}，当前会话数：{}", webSocketId, sessionMap.size());
     }
@@ -138,30 +134,6 @@ public abstract class WebSocketManager {
     }
 
     /**
-     * 发送 WebSocket 文本消息
-     *
-     * <h3>处理逻辑
-     * <p>自动补全消息发送时间戳并序列化为 JSON，通过会话级 lock 串行发送。
-     * <p>会话不存在、已关闭或发送失败时返回 false，由调用方根据返回值降级处理。
-     *
-     * @param webSocketId 会话 ID
-     * @param message     文本消息对象
-     * @return 发送成功返回 true，否则返回 false
-     */
-    public boolean sendText(@NotBlank String webSocketId, @NotNull WsTextMessage message) {
-        // 补全消息发送时间戳
-        message.setTimestamp(Instant.now());
-
-        // 序列化为 JSON 后构建文本帧并发送
-        String json = JsonUtils.stringify(message);
-        boolean sent = doSend(webSocketId, new TextMessage(json));
-        if (sent) {
-            log.debug("发送文本消息，内容：{}", json);
-        }
-        return sent;
-    }
-
-    /**
      * 发送 WebSocket 二进制消息
      *
      * <h3>处理逻辑
@@ -194,7 +166,7 @@ public abstract class WebSocketManager {
      * @return 发送成功返回 true，否则返回 false
      */
     private boolean doSend(String webSocketId, WebSocketMessage<?> message) {
-        ReentrantLock lock = sendLockMap.computeIfAbsent(webSocketId, k -> new ReentrantLock());
+        ReentrantLock lock = sendLockMap.computeIfAbsent(webSocketId, _ -> new ReentrantLock());
         lock.lock();
         // 使用 try-finally 保证 lock 释放
         // 原因：lock 持有期间任何异常（如 sendMessage 抛出 RuntimeException）都会跳过 unlock
