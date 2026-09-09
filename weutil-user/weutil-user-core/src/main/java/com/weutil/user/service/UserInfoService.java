@@ -8,6 +8,7 @@ import com.weutil.common.annotation.LogExecution;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -21,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
  * @author <a href="https://www.inlym.com">inlym</a>
  * @since 2026-09-07
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Validated
@@ -55,6 +57,7 @@ public class UserInfoService {
      * <h3>处理逻辑
      * <p>以纯 Builder 方式构建仅含主键和待更新字段的专用更新实例并持久化。
      * <p>昵称为 null 时表示不修改，不加入更新实例。
+     * <p>所有字段均为 null 时跳过更新直接返回当前信息，避免向数据库发送无 SET 列的非法 SQL。
      * <p>头像键名暂不处理，待对象存储模块接线后实现转存逻辑。
      * <p>更新完成后返回最新的用户信息。
      *
@@ -65,9 +68,17 @@ public class UserInfoService {
     @LogExecution
     public UserInfoVO updateUserInfo(long userId, @Valid @NotNull UserInfoUpdateDTO dto) {
         // 按需填充待更新字段，null 字段不加入更新实例
+        boolean hasUpdateField = false;
         User.UserBuilder updateUserBuilder = User.builder().id(userId);
         if (dto.getNickname() != null) {
             updateUserBuilder.nickname(dto.getNickname());
+            hasUpdateField = true;
+        }
+
+        // 无任何待更新字段时跳过数据库操作
+        if (!hasUpdateField) {
+            log.trace("请求未携带任何待更新字段，跳过更新，用户 ID：{}", userId);
+            return doGetUserInfo(userId);
         }
 
         // 持久化更新

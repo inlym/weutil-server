@@ -1,5 +1,6 @@
 package com.weutil.user.model;
 
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,10 +23,11 @@ import lombok.NoArgsConstructor;
 public class UserInfoUpdateDTO {
 
     /**
-     * 用户的显示昵称，用于在界面上展示，为 null 时表示不修改
+     * 用户的显示昵称，用于在界面上展示，为 null 时表示不修改，不允许纯空白字符
      *
      * @example 小明
      */
+    @Pattern(regexp = ".*\\S.*")
     @Size(max = 100)
     private String nickname;
 

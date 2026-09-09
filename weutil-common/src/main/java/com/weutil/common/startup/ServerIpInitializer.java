@@ -5,12 +5,17 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.http.client.ClientHttpRequestFactoryBuilder;
+import org.springframework.boot.http.client.HttpClientSettings;
+import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClient;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.time.Duration;
 import java.util.Enumeration;
 
 /**
@@ -31,6 +36,9 @@ public class ServerIpInitializer implements ApplicationRunner {
 
     /** 公网 IP 占位符 */
     public static final String PLACEHOLDER_PUBLIC_IP = "PUBLIC_IP";
+
+    /** 公网 IP 查询超时时间（秒） */
+    private static final int IP_FETCH_TIMEOUT_SECONDS = 3;
 
     /** 公网 IP */
     @Getter
@@ -142,18 +150,42 @@ public class ServerIpInitializer implements ApplicationRunner {
      *
      * <h3>处理逻辑
      * <p>通过请求 ifconfig.me/ip 接口获取公网 IP，响应体即为 IP 字符串。
+     * <p>请求带独立超时配置：默认 JDK HttpClient 无读超时，目标服务挂起会阻塞应用启动。
      *
      * @return 公网 IP 地址，请求失败时返回 "unknown"
      */
     private String fetchPublicIp() {
+        // 基于 JDK HttpClient 构造带超时的请求工厂，防止外网服务挂起阻塞启动
+        ClientHttpRequestFactory requestFactory = ClientHttpRequestFactoryBuilder
+            .jdk()
+            .build(
+                HttpClientSettings
+                    .defaults()
+                    .withConnectTimeout(Duration.ofSeconds(IP_FETCH_TIMEOUT_SECONDS))
+                    .withReadTimeout(Duration.ofSeconds(IP_FETCH_TIMEOUT_SECONDS))
+            );
+
         // 外部网络请求在内网隔离或网络异常环境下可能失败，
         // 捕获异常并降级返回 "unknown" 保证启动流程不中断
         try {
-            return RestClient.create()
+            String body = RestClient
+                .builder()
+                .requestFactory(requestFactory)
+                .build()
                 .get()
                 .uri("https://ifconfig.me/ip")
                 .retrieve()
                 .body(String.class);
+
+            // 响应体首尾可能带换行符，去除后再使用
+            String publicIp = body == null ? null : body.trim();
+
+            if (!StringUtils.hasText(publicIp)) {
+                log.warn("获取公网 IP 返回空内容，将使用 unknown 作为默认值");
+                return "unknown";
+            }
+
+            return publicIp;
         } catch (Exception e) {
             log.warn("获取公网 IP 失败，将使用 unknown 作为默认值", e);
             return "unknown";

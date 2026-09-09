@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
  *
  * <h2>说明
  * <p>封装阿里云短信服务的短信发送能力，当前提供验证码短信发送。
+ * <p>手机号属于个人敏感信息，日志和异常消息中一律使用脱敏后的手机号。
  *
  * @author <a href="https://www.inlym.com">inlym</a>
  * @since 2026-09-08
@@ -60,13 +61,13 @@ public class AliyunSmsService {
             throw new ThirdPartySdkException(
                 String.format(
                     "发送阿里云验证码短信失败，手机号：%s，业务码：%s",
-                    phoneNumber,
+                    maskPhone(phoneNumber),
                     body == null ? null : body.getCode()
                 )
             );
         }
 
-        log.info("阿里云验证码短信发送成功，手机号：{}，发送流水号：{}", phoneNumber, body.getBizId());
+        log.info("阿里云验证码短信发送成功，手机号：{}，发送流水号：{}", maskPhone(phoneNumber), body.getBizId());
     }
 
     // ================================ private 方法 ================================
@@ -89,7 +90,7 @@ public class AliyunSmsService {
             throw new ThirdPartySdkException(
                 String.format(
                     "调用阿里云短信接口失败，手机号：%s，错误信息：%s，诊断地址：%s",
-                    request.getPhoneNumbers(),
+                    maskPhone(request.getPhoneNumbers()),
                     e.getMessage(),
                     e.getData() == null ? null : e.getData().get("Recommend")
                 ),
@@ -97,9 +98,27 @@ public class AliyunSmsService {
             );
         } catch (Exception e) {
             throw new ThirdPartySdkException(
-                String.format("调用阿里云短信接口失败，手机号：%s", request.getPhoneNumbers()),
+                String.format("调用阿里云短信接口失败，手机号：%s", maskPhone(request.getPhoneNumbers())),
                 e
             );
         }
+    }
+
+    /**
+     * 脱敏手机号
+     *
+     * <h3>脱敏规则
+     * <p>长度充足时保留前 3 位和后 4 位，中间替换为 4 个星号（如 138****1234）。
+     * <p>长度不足 8 位时仅保留后 4 位，前缀替换为 4 个星号。
+     *
+     * @param phoneNumber 原始手机号
+     * @return 脱敏后的手机号
+     */
+    private String maskPhone(String phoneNumber) {
+        if (phoneNumber.length() < 8) {
+            return "****" + phoneNumber.substring(Math.max(0, phoneNumber.length() - 4));
+        }
+
+        return phoneNumber.substring(0, 3) + "****" + phoneNumber.substring(phoneNumber.length() - 4);
     }
 }

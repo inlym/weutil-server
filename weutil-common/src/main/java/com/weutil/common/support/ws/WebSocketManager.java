@@ -96,7 +96,7 @@ public abstract class WebSocketManager {
     public WebSocketSession getById(@NotBlank String webSocketId) {
         WebSocketSession session = sessionMap.get(webSocketId);
         if (session == null) {
-            throw new WebSocketException("WebSocket 会话不存在，会话 ID：" + webSocketId);
+            throw new WebSocketException(String.format("WebSocket 会话不存在，会话 ID：%s", webSocketId));
         }
         return session;
     }

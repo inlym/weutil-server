@@ -17,7 +17,7 @@ create table `user`
     `status`          int unsigned    not null default 0 comment '用户状态',
 
     primary key (`id`)
-) engine = InnoDB default character set = `utf8mb4` comment = '用户实体类';
+) engine = InnoDB default character set = `utf8mb4` comment = '用户';
 
 create table `user_credential`
 (
@@ -38,7 +38,7 @@ create table `user_credential`
 
     primary key (`id`),
     unique key `uk_token` (`token`)
-) engine = InnoDB default character set = `utf8mb4` comment = '用户认证凭证实体类';
+) engine = InnoDB default character set = `utf8mb4` comment = '用户认证凭证';
 
 create table `user_setting`
 (
@@ -56,4 +56,4 @@ create table `user_setting`
 
     primary key (`id`),
     unique key `uk_user_key` (`user_id`, `setting_key`)
-) engine = InnoDB default character set = `utf8mb4` comment = '用户设置实体类';
+) engine = InnoDB default character set = `utf8mb4` comment = '用户设置';

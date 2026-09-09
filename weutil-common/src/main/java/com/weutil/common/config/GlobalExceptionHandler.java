@@ -1,9 +1,9 @@
 package com.weutil.common.config;
 
+import com.weutil.common.exception.EntityNotFoundException;
 import com.weutil.common.exception.ExternalApiException;
 import com.weutil.common.exception.PageCursorInvalidException;
 import com.weutil.common.exception.PlaceholderException;
-import com.weutil.common.exception.EntityNotFoundException;
 import com.weutil.common.exception.ThirdPartySdkException;
 import com.weutil.common.exception.UnpredictableException;
 import com.weutil.common.exception.WebSocketException;

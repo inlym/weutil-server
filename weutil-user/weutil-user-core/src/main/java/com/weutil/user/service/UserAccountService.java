@@ -3,6 +3,7 @@ package com.weutil.user.service;
 import com.weutil.user.credential.service.UserCredentialService;
 import com.weutil.user.entity.User;
 import com.weutil.user.enums.UserStatus;
+import com.weutil.user.exception.UserNotFoundException;
 import com.weutil.user.mapper.UserMapper;
 import com.weutil.common.annotation.LogExecution;
 import lombok.RequiredArgsConstructor;

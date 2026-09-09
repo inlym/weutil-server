@@ -86,6 +86,7 @@ public class UserCredentialService {
      * <h3>处理逻辑
      * <p>重新计算过期时间为当前时间加上默认有效期。
      * <p>同时更新续期次数和上次续期时间字段。
+     * <p>续期次数由数据库原子自增，入参凭证可能来自缓存，内存读改写会导致计数丢失或回退。
      *
      * <h3>缓存策略
      * <p>使用 @CacheEvict 注解，续期时清除缓存，下次查询时重新加载最新数据。
@@ -96,22 +97,16 @@ public class UserCredentialService {
     @LogExecution
     public void renew(UserCredential credential) {
         Instant now = Instant.now();
-        UserCredential updateCredential = UserCredential
-            .builder()
-            .id(credential.getId())
-            .expireTime(now.plus(DEFAULT_VALIDITY_PERIOD))
-            .renewalCount(credential.getRenewalCount() + 1)
-            .lastRenewalTime(now)
-            .build();
 
-        userCredentialMapper.update(updateCredential);
+        // renewal_count 需要数据库层面原子自增，Builder 方式无法表达此语义
+        UpdateChain.of(UserCredential.class)
+            .set(USER_CREDENTIAL.EXPIRE_TIME, now.plus(DEFAULT_VALIDITY_PERIOD))
+            .setRaw(USER_CREDENTIAL.RENEWAL_COUNT, "renewal_count + 1")
+            .set(USER_CREDENTIAL.LAST_RENEWAL_TIME, now)
+            .where(USER_CREDENTIAL.ID.eq(credential.getId()))
+            .update();
 
-        log.info(
-            "续期用户认证凭证，ID：{}，用户 ID：{}，续期次数：{}",
-            credential.getId(),
-            credential.getUserId(),
-            updateCredential.getRenewalCount()
-        );
+        log.info("续期用户认证凭证，ID：{}，用户 ID：{}", credential.getId(), credential.getUserId());
     }
 
     /**
