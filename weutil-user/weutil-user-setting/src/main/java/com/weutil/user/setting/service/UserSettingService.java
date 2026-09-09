@@ -1,9 +1,8 @@
 package com.weutil.user.setting.service;
 
+import com.weutil.user.setting.UserSettingDefinition;
 import com.weutil.user.setting.entity.UserSetting;
 import com.weutil.user.setting.mapper.UserSettingMapper;
-import com.weutil.common.extension.UserSettingDefinition;
-import com.weutil.common.service.UserSettingProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,7 @@ import static com.weutil.user.setting.entity.table.UserSettingTableDef.USER_SETT
  * 用户设置服务
  *
  * <h2>说明
- * <p>实现 {@code UserSettingProvider} 接口，提供用户设置的读取和写入能力。
+ * <p>提供用户设置的读取和写入能力。
  * <p>读取时优先查询数据库，未找到记录时返回设置项的默认值。
  * <p>写入时若记录不存在则创建，已存在则更新。
  *
@@ -24,7 +23,7 @@ import static com.weutil.user.setting.entity.table.UserSettingTableDef.USER_SETT
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserSettingService implements UserSettingProvider {
+public class UserSettingService {
 
     /** 用户设置数据访问层 */
     private final UserSettingMapper userSettingMapper;
@@ -38,7 +37,6 @@ public class UserSettingService implements UserSettingProvider {
      * @param definition 设置项定义
      * @return 设置值，不为 null
      */
-    @Override
     public String getSetting(long userId, UserSettingDefinition definition) {
         // 查询用户设置记录
         UserSetting setting = userSettingMapper.selectOneByCondition(
@@ -65,7 +63,6 @@ public class UserSettingService implements UserSettingProvider {
      * @param definition 设置项定义
      * @param value      设置值
      */
-    @Override
     public void setSetting(long userId, UserSettingDefinition definition, String value) {
         // 查询是否已有设置记录
         UserSetting existing = userSettingMapper.selectOneByCondition(

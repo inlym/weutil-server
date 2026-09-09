@@ -1,11 +1,11 @@
-package com.weutil.common.extension;
+package com.weutil.user.setting;
 
 /**
  * 用户设置项定义接口
  *
  * <h2>说明
  * <p>各模块通过枚举实现此接口，定义该模块内的用户设置项及其默认值。
- * <p>实现类需注册为 Spring Bean（枚举类标注 {@code @Getter} 并通过 Spring 自动收集）。
+ * <p>实现方模块需依赖本模块，设置值通过 {@code UserSettingService} 读写。
  *
  * @author <a href="https://www.inlym.com">inlym</a>
  * @since 2026-09-07
