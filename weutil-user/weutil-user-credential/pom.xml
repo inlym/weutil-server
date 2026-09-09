@@ -23,6 +23,12 @@
             <groupId>com.weutil</groupId>
             <artifactId>weutil-common</artifactId>
         </dependency>
+
+        <!-- 用户核心模块（监听账户注销事件吊销凭证） -->
+        <dependency>
+            <groupId>com.weutil</groupId>
+            <artifactId>weutil-user-core</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

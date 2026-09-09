@@ -1,12 +1,13 @@
 package com.weutil.user.service;
 
-import com.weutil.user.credential.service.UserCredentialService;
 import com.weutil.user.entity.User;
 import com.weutil.user.enums.UserStatus;
+import com.weutil.user.event.UserAccountCancelledEvent;
 import com.weutil.user.exception.UserNotFoundException;
 import com.weutil.user.mapper.UserMapper;
 import com.weutil.common.annotation.LogExecution;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -30,8 +31,8 @@ public class UserAccountService {
     /** 用户服务 */
     private final UserService userService;
 
-    /** 用户认证凭证服务 */
-    private final UserCredentialService userCredentialService;
+    /** 事件发布器 */
+    private final ApplicationEventPublisher eventPublisher;
 
     // ================================ public 方法 ================================
 
@@ -39,7 +40,7 @@ public class UserAccountService {
      * 注销账户
      *
      * <h3>处理逻辑
-     * <p>确认用户存在后，先吊销该用户全部认证凭证，使存量令牌立即失效。
+     * <p>确认用户存在后，发布账户注销事件，凭证模块同步监听并吊销该用户全部认证凭证，存量令牌立即失效。
      * <p>再将用户状态更新为已注销。
      * <p>先吊销后改状态：若两步之间失败，用户令牌已失效但状态未变更，
      * <p>重新登录后可继续使用，优于反向顺序下注销状态残留有效令牌的结果。
@@ -52,8 +53,8 @@ public class UserAccountService {
         // 确认用户存在，不存在时抛出异常
         userService.getUserById(userId);
 
-        // 吊销该用户全部认证凭证，存量令牌立即失效
-        userCredentialService.revokeByUserId(userId);
+        // 发布账户注销事件，凭证模块同步吊销该用户全部认证凭证，存量令牌立即失效
+        eventPublisher.publishEvent(UserAccountCancelledEvent.builder().userId(userId).build());
 
         // 将用户状态更新为已注销
         User updateUser = User
