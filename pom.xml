@@ -213,6 +213,11 @@
             </dependency>
             <dependency>
                 <groupId>com.weutil</groupId>
+                <artifactId>weutil-aliyun-pns</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.weutil</groupId>
                 <artifactId>weutil-bootstrap</artifactId>
                 <version>${revision}</version>
             </dependency>

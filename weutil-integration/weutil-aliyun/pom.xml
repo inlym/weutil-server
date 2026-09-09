@@ -23,6 +23,7 @@
     <properties>
         <aliyun.sdk.credentials.version>1.0.6</aliyun.sdk.credentials.version>
         <aliyun.sdk.dysmsapi.version>4.6.0</aliyun.sdk.dysmsapi.version>
+        <aliyun.sdk.dypnsapi.version>2.0.0</aliyun.sdk.dypnsapi.version>
         <aliyun.sdk.oss.version>0.6.0</aliyun.sdk.oss.version>
     </properties>
 
@@ -31,6 +32,7 @@
         <module>weutil-aliyun-core</module>
         <module>weutil-aliyun-sms</module>
         <module>weutil-aliyun-oss</module>
+        <module>weutil-aliyun-pns</module>
     </modules>
 
     <!-- ===== 依赖版本管理：统一管理阿里云 SDK 版本 ===== -->
@@ -48,6 +50,13 @@
                 <groupId>com.aliyun</groupId>
                 <artifactId>dysmsapi20170525</artifactId>
                 <version>${aliyun.sdk.dysmsapi.version}</version>
+            </dependency>
+
+            <!-- 阿里云号码认证服务 SDK -->
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>dypnsapi20170525</artifactId>
+                <version>${aliyun.sdk.dypnsapi.version}</version>
             </dependency>
 
             <!-- 阿里云 OSS 服务 SDK -->

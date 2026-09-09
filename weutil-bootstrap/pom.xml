@@ -60,6 +60,12 @@
             <artifactId>weutil-aliyun-oss</artifactId>
         </dependency>
 
+        <!-- 阿里云号码认证模块 -->
+        <dependency>
+            <groupId>com.weutil</groupId>
+            <artifactId>weutil-aliyun-pns</artifactId>
+        </dependency>
+
         <!-- Logstash Logback Encoder for JSON structured logging -->
         <dependency>
             <groupId>net.logstash.logback</groupId>
@@ -78,6 +84,8 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <!-- 允许 classpath 上的库（如 Netty）加载本地库，消除 JDK 24+ 的 JNI 警告，并避免未来 JDK 版本直接阻断 -->
+                    <jvmArguments>--enable-native-access=ALL-UNNAMED</jvmArguments>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>

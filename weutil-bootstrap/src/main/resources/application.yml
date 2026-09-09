@@ -128,6 +128,11 @@ weutil:
             # 用户文件桶名称，存放头像、图片、docx 等用户上传的异构文件
             bucket-name: "请填入用户文件桶名称"
 
+        # 阿里云号码认证服务配置
+        pns:
+            # 短信认证签名，短信开头【】中的内容，需先在号码认证服务控制台申请并通过审核
+            sign-name: "请填入短信认证签名"
+
 # Spring Boot Actuator 监控配置
 management:
     # 端点 Web 暴露配置
