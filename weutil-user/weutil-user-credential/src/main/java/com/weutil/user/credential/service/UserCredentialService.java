@@ -1,5 +1,6 @@
 package com.weutil.user.credential.service;
 
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.update.UpdateChain;
 import com.weutil.user.credential.config.UserCredentialCacheTtlCustomizer;
 import com.weutil.user.credential.entity.UserCredential;
@@ -9,6 +10,8 @@ import com.weutil.common.util.RandomUtils;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 
 import static com.weutil.user.credential.entity.table.UserCredentialTableDef.USER_CREDENTIAL;
 
@@ -43,6 +47,9 @@ public class UserCredentialService {
     /** 用户认证凭证数据访问层 */
     private final UserCredentialMapper userCredentialMapper;
 
+    /** 缓存管理器，用于按令牌精确清除缓存条目 */
+    private final CacheManager cacheManager;
+
     // ================================ public 方法 ================================
 
     /**
@@ -53,12 +60,11 @@ public class UserCredentialService {
      * <p>计算凭证过期时间为当前时间加上默认有效期。
      * <p>构建用户认证凭证实体对象并存入数据库。
      *
-     * @param userId   用户 ID
-     * @param clientIp 客户端 IP
+     * @param userId 用户 ID
      * @return 创建后的用户认证凭证，不为 null
      */
     @LogExecution
-    public UserCredential create(Long userId, String clientIp) {
+    public UserCredential create(Long userId) {
         // 生成随机令牌并计算过期时间
         String token = RandomUtils.generateAlphanumeric(TOKEN_LENGTH);
         Instant expireTime = Instant.now().plus(DEFAULT_VALIDITY_PERIOD);
@@ -68,14 +74,13 @@ public class UserCredentialService {
             .builder()
             .userId(userId)
             .token(token)
-            .clientIp(clientIp)
             .expireTime(expireTime)
             .renewalCount(0)
             .build();
 
         userCredentialMapper.insertSelective(credential);
 
-        log.info("创建用户认证凭证，ID：{}，用户 ID：{}，客户端 IP：{}", credential.getId(), userId, clientIp);
+        log.info("创建用户认证凭证，ID：{}，用户 ID：{}", credential.getId(), userId);
 
         return credential;
     }
@@ -117,21 +122,39 @@ public class UserCredentialService {
      * <p>用于账户注销、封禁等需要立即终止用户会话的场景。
      *
      * <h3>缓存策略
-     * <p>吊销按用户维度批量生效，无法按单个令牌精确清除缓存，
-     * <p>因此使用 allEntries 清空该缓存的全部条目，下次查询回源数据库。
+     * <p>缓存键为令牌，与吊销的用户维度不一致，因此先查询该用户的全部令牌，
+     * <p>更新数据库后按令牌逐个精确清除缓存，避免全量清空影响其他用户。
+     * <p>缓存不可用时降级为不清除，残留条目随缓存 TTL 过期失效。
      *
      * @param userId 用户 ID
      */
-    @CacheEvict(value = UserCredentialCacheTtlCustomizer.CACHE_USER_CREDENTIAL_TOKEN, allEntries = true)
     @LogExecution
     public void revokeByUserId(Long userId) {
+        // 查询该用户全部凭证的令牌，用于吊销后精确清除缓存
+        List<String> tokens = userCredentialMapper.selectObjectListByQueryAs(
+            QueryWrapper.create().select(USER_CREDENTIAL.TOKEN).where(USER_CREDENTIAL.USER_ID.eq(userId)),
+            String.class
+        );
+
         // 批量按条件置过期，Builder 方式仅支持按主键更新，无法表达此语义
         UpdateChain.of(UserCredential.class)
             .set(USER_CREDENTIAL.EXPIRE_TIME, Instant.now().minusSeconds(1))
             .where(USER_CREDENTIAL.USER_ID.eq(userId))
             .update();
 
-        log.info("吊销用户全部认证凭证，用户 ID：{}", userId);
+        log.info("吊销用户全部认证凭证，用户 ID：{}，共 {} 条凭证", userId, tokens.size());
+
+        // 缓存键为令牌而非用户 ID，需逐个精确清除，不能全量清空
+        Cache cache = cacheManager.getCache(UserCredentialCacheTtlCustomizer.CACHE_USER_CREDENTIAL_TOKEN);
+        if (cache == null) {
+            // 缓存未注册属配置错误，已吊销凭证将残留至缓存 TTL 过期，告警暴露
+            log.warn("凭证缓存未注册，跳过精确清除，用户 ID：{}", userId);
+            return;
+        }
+
+        for (String token : tokens) {
+            cache.evict(token);
+        }
     }
 
     /**

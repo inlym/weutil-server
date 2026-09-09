@@ -87,20 +87,6 @@ public class UserCredential {
     private Instant expireTime;
 
     /**
-     * 客户端 IP
-     *
-     * <h3>字段说明
-     * <p>客户端发起请求时的 IP 地址
-     * <p>用于安全审计和访问控制
-     *
-     * <h3>数据库字段定义
-     * <p>数据类型：varchar(50)
-     * <p>非空约束：NULL
-     * <p>默认值：NULL
-     */
-    private String clientIp;
-
-    /**
      * 已续期次数
      *
      * <h3>字段说明

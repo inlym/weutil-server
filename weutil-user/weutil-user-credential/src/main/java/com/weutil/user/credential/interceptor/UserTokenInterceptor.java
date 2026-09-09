@@ -8,6 +8,7 @@ import com.weutil.common.constants.CustomHttpHeader;
 import com.weutil.common.model.auth.SimpleUserAuthentication;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContext;
@@ -43,6 +44,9 @@ import java.time.Instant;
 @RequiredArgsConstructor
 public class UserTokenInterceptor implements HandlerInterceptor {
 
+    /** 续期触发阈值，凭证剩余有效期低于该时长时执行续期 */
+    private static final Duration RENEWAL_THRESHOLD = Duration.ofDays(10);
+
     /** 用户认证凭证服务 */
     private final UserCredentialService userCredentialService;
 
@@ -62,9 +66,9 @@ public class UserTokenInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        Object handler
+        @NonNull HttpServletRequest request,
+        @NonNull HttpServletResponse response,
+        @NonNull Object handler
     ) {
         // 非 HandlerMethod（如静态资源）无需令牌验证
         if (!(handler instanceof HandlerMethod handlerMethod)) {
@@ -101,8 +105,8 @@ public class UserTokenInterceptor implements HandlerInterceptor {
         // 将用户 ID 写入请求属性，供 @UserId 参数解析器使用
         request.setAttribute(ContextKeys.USER_ID, credential.getUserId());
 
-        // 凭证即将过期（10天内），执行续期
-        if (credential.getExpireTime().isBefore(Instant.now().plus(Duration.ofDays(10)))) {
+        // 凭证剩余有效期低于续期阈值，执行续期
+        if (credential.getExpireTime().isBefore(Instant.now().plus(RENEWAL_THRESHOLD))) {
             userCredentialService.renew(credential);
         }
 

@@ -32,7 +32,6 @@ create table `user_credential`
     -- ================================ 业务字段 ================================
     `token`             char(32)        not null comment '认证令牌',
     `expire_time`       timestamp(6)    null default null comment '过期时间',
-    `client_ip`         varchar(50)     default null comment '客户端 IP',
     `renewal_count`     int unsigned    not null default 0 comment '已续期次数',
     `last_renewal_time` timestamp(6)    null default null comment '上一次续期时间',
 
