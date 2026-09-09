@@ -16,14 +16,18 @@ weutil-server/
 │   ├── weutil-user-credential/    # 用户凭证模块（凭证签发、验证、续期）
 │   └── weutil-user-setting/       # 用户设置模块（用户设置读写）
 ├── weutil-integration/            # 外部系统集成模块（封装第三方服务）
-│   └── weutil-aliyun/             # 阿里云服务集成
+│   └── weutil-aliyun/             # 阿里云服务集成（聚合）
+│       ├── weutil-aliyun-core/    # 阿里云公共基础模块（凭据客户端）
+│       ├── weutil-aliyun-sms/     # 阿里云短信服务模块
+│       ├── weutil-aliyun-oss/     # 阿里云对象存储模块
+│       └── weutil-aliyun-pns/     # 阿里云号码认证服务模块
 └── weutil-bootstrap/              # 启动模块（主类、端口 35125、profile: local）
 ```
 
 **模块依赖**:
-- 所有模块依赖 `weutil-common`，`weutil-bootstrap` 聚合全部模块
+- 业务模块均依赖 `weutil-common`（`weutil-aliyun-core` 除外，仅封装凭据客户端），`weutil-bootstrap` 聚合全部模块
 - 跨模块协作通过 Spring 事件解耦：事件类定义在发布方模块的 `event` 包，监听方依赖发布方模块处理
-- 当前唯一的平级依赖：`weutil-user-credential` → `weutil-user-core`（监听账户注销事件，吊销用户凭证）
+- 平级依赖：`weutil-user-credential` → `weutil-user-core`（监听账户注销事件，吊销用户凭证）；阿里云业务子模块（sms/oss/pns）→ `weutil-aliyun-core`（复用凭据客户端）
 
 **启动**: `cd weutil-bootstrap && mvn spring-boot:run`（需先在 application.yml 中填入数据库和 Redis 连接信息）
 **调试**: `lsof -i :35125` → `kill -9 <PID>`
