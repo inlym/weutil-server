@@ -20,6 +20,11 @@ weutil-server/
 └── weutil-bootstrap/              # 启动模块（主类、端口 35125、profile: local）
 ```
 
+**模块依赖**:
+- 所有模块依赖 `weutil-common`，`weutil-bootstrap` 聚合全部模块
+- 跨模块协作通过 Spring 事件解耦：事件类定义在发布方模块的 `event` 包，监听方依赖发布方模块处理
+- 当前唯一的平级依赖：`weutil-user-credential` → `weutil-user-core`（监听账户注销事件，吊销用户凭证）
+
 **启动**: `cd weutil-bootstrap && mvn spring-boot:run`（需先在 application.yml 中填入数据库和 Redis 连接信息）
 **调试**: `lsof -i :35125` → `kill -9 <PID>`
 
