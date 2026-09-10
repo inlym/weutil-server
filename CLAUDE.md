@@ -20,7 +20,8 @@ weutil-server/
 │       ├── weutil-aliyun-core/    # 阿里云公共基础模块（凭据客户端）
 │       ├── weutil-aliyun-sms/     # 阿里云短信服务模块
 │       ├── weutil-aliyun-oss/     # 阿里云对象存储模块
-│       └── weutil-aliyun-pns/     # 阿里云号码认证服务模块
+│       ├── weutil-aliyun-pns/     # 阿里云号码认证服务模块
+│       └── weutil-aliyun-captcha/ # 阿里云验证码服务模块
 └── weutil-bootstrap/              # 启动模块（主类、端口 35125、profile: local）
 ```
 

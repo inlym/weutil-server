@@ -133,6 +133,11 @@ weutil:
             # 短信认证签名，短信开头【】中的内容，需先在号码认证服务控制台申请并通过审核
             sign-name: "请填入短信认证签名"
 
+        # 阿里云验证码服务配置
+        captcha:
+            # 验证场景 ID，控制台新建验证场景后生成，服务端写入验签请求防止场景被篡改
+            scene-id: "请填入验证场景 ID"
+
 # Spring Boot Actuator 监控配置
 management:
     # 端点 Web 暴露配置
