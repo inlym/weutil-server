@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ===== 父项目配置：继承统一的依赖与插件管理 ===== -->
+    <parent>
+        <groupId>com.fribuddy</groupId>
+        <artifactId>fribuddy-server</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <!-- ===== 模块标识信息：定义当前模块的坐标和说明 ===== -->
+    <artifactId>fribuddy-system</artifactId>
+
+    <name>${project.artifactId}</name>
+    <description>系统运行模块 - 与业务逻辑无关，与系统运行相关的事项</description>
+
+    <!-- ===== 模块依赖：声明当前模块所需的依赖项 ===== -->
+    <dependencies>
+        <!-- 核心共享模块 -->
+        <dependency>
+            <groupId>com.fribuddy</groupId>
+            <artifactId>fribuddy-common</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

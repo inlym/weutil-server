@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ===== 父项目配置：继承阿里云聚合模块 ===== -->
+    <parent>
+        <groupId>com.fribuddy</groupId>
+        <artifactId>fribuddy-aliyun</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <!-- ===== 模块标识信息：定义当前模块的坐标和说明 ===== -->
+    <artifactId>fribuddy-aliyun-sms</artifactId>
+
+    <name>${project.artifactId}</name>
+    <description>阿里云短信服务集成模块 - 提供验证码短信发送能力</description>
+
+    <!-- ===== 模块依赖：声明当前模块所需的依赖项 ===== -->
+    <dependencies>
+        <!-- 核心共享模块 -->
+        <dependency>
+            <groupId>com.fribuddy</groupId>
+            <artifactId>fribuddy-common</artifactId>
+        </dependency>
+
+        <!-- 阿里云公共模块 -->
+        <dependency>
+            <groupId>com.fribuddy</groupId>
+            <artifactId>fribuddy-aliyun-core</artifactId>
+        </dependency>
+
+        <!-- 阿里云短信服务 SDK -->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>dysmsapi20170525</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

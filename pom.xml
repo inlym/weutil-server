@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- ===== 项目基本坐标信息：定义父项目的 Maven 唯一标识 ===== -->
-    <groupId>com.weutil</groupId>
-    <artifactId>weutil-server</artifactId>
+    <groupId>com.fribuddy</groupId>
+    <artifactId>fribuddy-server</artifactId>
     <version>${revision}</version>
 
     <!-- ===== 项目打包方式：父项目作为聚合器使用 pom 打包 ===== -->
@@ -14,11 +14,11 @@
 
     <!-- ===== 子模块声明：控制参与构建与发布的模块列表 ===== -->
     <modules>
-        <module>weutil-common</module>
-        <module>weutil-system</module>
-        <module>weutil-user</module>
-        <module>weutil-integration</module>
-        <module>weutil-bootstrap</module>
+        <module>fribuddy-common</module>
+        <module>fribuddy-system</module>
+        <module>fribuddy-user</module>
+        <module>fribuddy-integration</module>
+        <module>fribuddy-bootstrap</module>
     </modules>
 
     <name>${project.artifactId}</name>
@@ -172,58 +172,58 @@
         <dependencies>
             <!-- === 内部模块依赖管理 === -->
             <dependency>
-                <groupId>com.weutil</groupId>
-                <artifactId>weutil-common</artifactId>
+                <groupId>com.fribuddy</groupId>
+                <artifactId>fribuddy-common</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>com.weutil</groupId>
-                <artifactId>weutil-system</artifactId>
+                <groupId>com.fribuddy</groupId>
+                <artifactId>fribuddy-system</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>com.weutil</groupId>
-                <artifactId>weutil-user-core</artifactId>
+                <groupId>com.fribuddy</groupId>
+                <artifactId>fribuddy-user-core</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>com.weutil</groupId>
-                <artifactId>weutil-user-credential</artifactId>
+                <groupId>com.fribuddy</groupId>
+                <artifactId>fribuddy-user-credential</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>com.weutil</groupId>
-                <artifactId>weutil-user-setting</artifactId>
+                <groupId>com.fribuddy</groupId>
+                <artifactId>fribuddy-user-setting</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>com.weutil</groupId>
-                <artifactId>weutil-aliyun-core</artifactId>
+                <groupId>com.fribuddy</groupId>
+                <artifactId>fribuddy-aliyun-core</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>com.weutil</groupId>
-                <artifactId>weutil-aliyun-sms</artifactId>
+                <groupId>com.fribuddy</groupId>
+                <artifactId>fribuddy-aliyun-sms</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>com.weutil</groupId>
-                <artifactId>weutil-aliyun-oss</artifactId>
+                <groupId>com.fribuddy</groupId>
+                <artifactId>fribuddy-aliyun-oss</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>com.weutil</groupId>
-                <artifactId>weutil-aliyun-pns</artifactId>
+                <groupId>com.fribuddy</groupId>
+                <artifactId>fribuddy-aliyun-pns</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>com.weutil</groupId>
-                <artifactId>weutil-aliyun-captcha</artifactId>
+                <groupId>com.fribuddy</groupId>
+                <artifactId>fribuddy-aliyun-captcha</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>com.weutil</groupId>
-                <artifactId>weutil-bootstrap</artifactId>
+                <groupId>com.fribuddy</groupId>
+                <artifactId>fribuddy-bootstrap</artifactId>
                 <version>${revision}</version>
             </dependency>
             <!-- === 第三方依赖版本管理 === -->

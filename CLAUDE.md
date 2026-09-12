@@ -2,35 +2,35 @@
 
 ## 项目目标
 
-weutil-server 是「小鸣助手」项目的服务端。
+fribuddy-server 是「小鸣助手」项目的服务端。
 
 **技术栈**: Spring Boot 4.1.0 + Java 25 + MySQL + MyBatis-Flex 1.11.7 + Redis + Maven
 
 **模块结构**:
 ```
-weutil-server/
-├── weutil-common/                 # 通用模块（全局配置、基础设施）
-├── weutil-system/                 # 系统运行模块（与业务无关的系统级功能）
-├── weutil-user/                   # 用户模块（聚合）
-│   ├── weutil-user-core/          # 用户核心模块（用户基本信息）
-│   ├── weutil-user-credential/    # 用户凭证模块（凭证签发、验证、续期）
-│   └── weutil-user-setting/       # 用户设置模块（用户设置读写）
-├── weutil-integration/            # 外部系统集成模块（封装第三方服务）
-│   └── weutil-aliyun/             # 阿里云服务集成（聚合）
-│       ├── weutil-aliyun-core/    # 阿里云公共基础模块（凭据客户端）
-│       ├── weutil-aliyun-sms/     # 阿里云短信服务模块
-│       ├── weutil-aliyun-oss/     # 阿里云对象存储模块
-│       ├── weutil-aliyun-pns/     # 阿里云号码认证服务模块
-│       └── weutil-aliyun-captcha/ # 阿里云验证码服务模块
-└── weutil-bootstrap/              # 启动模块（主类、端口 35125、profile: local）
+fribuddy-server/
+├── fribuddy-common/                 # 通用模块（全局配置、基础设施）
+├── fribuddy-system/                 # 系统运行模块（与业务无关的系统级功能）
+├── fribuddy-user/                   # 用户模块（聚合）
+│   ├── fribuddy-user-core/          # 用户核心模块（用户基本信息）
+│   ├── fribuddy-user-credential/    # 用户凭证模块（凭证签发、验证、续期）
+│   └── fribuddy-user-setting/       # 用户设置模块（用户设置读写）
+├── fribuddy-integration/            # 外部系统集成模块（封装第三方服务）
+│   └── fribuddy-aliyun/             # 阿里云服务集成（聚合）
+│       ├── fribuddy-aliyun-core/    # 阿里云公共基础模块（凭据客户端）
+│       ├── fribuddy-aliyun-sms/     # 阿里云短信服务模块
+│       ├── fribuddy-aliyun-oss/     # 阿里云对象存储模块
+│       ├── fribuddy-aliyun-pns/     # 阿里云号码认证服务模块
+│       └── fribuddy-aliyun-captcha/ # 阿里云验证码服务模块
+└── fribuddy-bootstrap/              # 启动模块（主类、端口 35125、profile: local）
 ```
 
 **模块依赖**:
-- 业务模块均依赖 `weutil-common`（`weutil-aliyun-core` 除外，仅封装凭据客户端），`weutil-bootstrap` 聚合全部模块
+- 业务模块均依赖 `fribuddy-common`（`fribuddy-aliyun-core` 除外，仅封装凭据客户端），`fribuddy-bootstrap` 聚合全部模块
 - 跨模块协作通过 Spring 事件解耦：事件类定义在发布方模块的 `event` 包，监听方依赖发布方模块处理
-- 平级依赖：`weutil-user-credential` → `weutil-user-core`（监听账户注销事件，吊销用户凭证）；阿里云业务子模块（sms/oss/pns）→ `weutil-aliyun-core`（复用凭据客户端）
+- 平级依赖：`fribuddy-user-credential` → `fribuddy-user-core`（监听账户注销事件，吊销用户凭证）；阿里云业务子模块（sms/oss/pns）→ `fribuddy-aliyun-core`（复用凭据客户端）
 
-**启动**: `cd weutil-bootstrap && mvn spring-boot:run`（需先在 application.yml 中填入数据库和 Redis 连接信息）
+**启动**: `cd fribuddy-bootstrap && mvn spring-boot:run`（需先在 application.yml 中填入数据库和 Redis 连接信息）
 **调试**: `lsof -i :35125` → `kill -9 <PID>`
 
 ---

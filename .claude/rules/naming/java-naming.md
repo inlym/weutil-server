@@ -7,7 +7,7 @@
 | 类名 | PascalCase | `UserService` |
 | 方法/变量 | camelCase | `getUserById` |
 | 常量 | UPPER_SNAKE_CASE | `MAX_RETRY_COUNT` |
-| 包名 | 全小写点分隔 | `com.weutil.user` |
+| 包名 | 全小写点分隔 | `com.fribuddy.user` |
 
 ## 数据模型后缀
 
@@ -75,7 +75,7 @@ AI 对话相关业务中，`memory` 必须译为"记忆"，禁止译为"内存"�
 
 ## 注释禁用项目名与产品名
 
-注释中禁止出现项目名 `weutil` 和产品名「小鸣助手」，注释本身已在项目上下文中，名称前缀不提供信息：
+注释中禁止出现项目名 `fribuddy` 和产品名「小鸣助手」，注释本身已在项目上下文中，名称前缀不提供信息：
 
 ```java
 // ✅ 正确
@@ -83,8 +83,8 @@ AI 对话相关业务中，`memory` 必须译为"记忆"，禁止译为"内存"�
 /** 服务端项目的主启动入口 */
 
 // ❌ 错误
-/** weutil 应用程序启动类 */
+/** fribuddy 应用程序启动类 */
 /** 「小鸣助手」服务端项目的主启动入口 */
 ```
 
-仅约束注释文本，包名 `com.weutil`、配置键 `weutil.*`、配置值 `weutil-server`、请求头前缀 `x-weutil-` 等代码标识符不受影响。
+仅约束注释文本，包名 `com.fribuddy`、配置键 `fribuddy.*`、配置值 `fribuddy-server`、请求头前缀 `x-fribuddy-` 等代码标识符不受影响。

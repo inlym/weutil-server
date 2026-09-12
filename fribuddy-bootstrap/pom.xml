@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ===== 父项目配置：继承统一的依赖与插件管理 ===== -->
+    <parent>
+        <groupId>com.fribuddy</groupId>
+        <artifactId>fribuddy-server</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <!-- ===== 模块标识信息：声明启动模块的 Maven 坐标 ===== -->
+    <artifactId>fribuddy-bootstrap</artifactId>
+
+    <name>${project.artifactId}</name>
+    <description>应用启动入口模块</description>
+
+    <!-- ===== 模块依赖配置：聚合内部业务模块 ===== -->
+    <dependencies>
+        <dependency>
+            <groupId>com.fribuddy</groupId>
+            <artifactId>fribuddy-common</artifactId>
+        </dependency>
+
+        <!-- 系统运行模块 -->
+        <dependency>
+            <groupId>com.fribuddy</groupId>
+            <artifactId>fribuddy-system</artifactId>
+        </dependency>
+
+        <!-- 用户核心模块 -->
+        <dependency>
+            <groupId>com.fribuddy</groupId>
+            <artifactId>fribuddy-user-core</artifactId>
+        </dependency>
+
+        <!-- 用户凭证模块 -->
+        <dependency>
+            <groupId>com.fribuddy</groupId>
+            <artifactId>fribuddy-user-credential</artifactId>
+        </dependency>
+
+        <!-- 用户设置模块 -->
+        <dependency>
+            <groupId>com.fribuddy</groupId>
+            <artifactId>fribuddy-user-setting</artifactId>
+        </dependency>
+
+        <!-- 阿里云短信模块 -->
+        <dependency>
+            <groupId>com.fribuddy</groupId>
+            <artifactId>fribuddy-aliyun-sms</artifactId>
+        </dependency>
+
+        <!-- 阿里云 OSS 模块 -->
+        <dependency>
+            <groupId>com.fribuddy</groupId>
+            <artifactId>fribuddy-aliyun-oss</artifactId>
+        </dependency>
+
+        <!-- 阿里云号码认证模块 -->
+        <dependency>
+            <groupId>com.fribuddy</groupId>
+            <artifactId>fribuddy-aliyun-pns</artifactId>
+        </dependency>
+
+        <!-- 阿里云验证码模块 -->
+        <dependency>
+            <groupId>com.fribuddy</groupId>
+            <artifactId>fribuddy-aliyun-captcha</artifactId>
+        </dependency>
+
+        <!-- Logstash Logback Encoder for JSON structured logging -->
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+        </dependency>
+    </dependencies>
+
+    <!-- ===== 构建配置：定制可执行 Jar 输出与打包插件 ===== -->
+    <build>
+        <!-- 设置构建的 jar 包名 -->
+        <finalName>fribuddy-server</finalName>
+
+        <plugins>
+            <!-- Spring Boot 打包插件：生成可执行 Jar，并排除 Lombok -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!-- 允许 classpath 上的库（如 Netty）加载本地库，消除 JDK 24+ 的 JNI 警告，并避免未来 JDK 版本直接阻断 -->
+                    <jvmArguments>--enable-native-access=ALL-UNNAMED</jvmArguments>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <!-- 构建时将版本号、构建时间等信息写入 META-INF/build-info.properties -->
+                            <goal>build-info</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Git 提交信息插件：生成 git.properties，由 Spring Boot GitInfoContributor 自动贡献到 /actuator/info 的 git 字段 -->
+            <plugin>
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

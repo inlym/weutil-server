@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ===== 父项目配置：继承用户聚合模块 ===== -->
+    <parent>
+        <groupId>com.fribuddy</groupId>
+        <artifactId>fribuddy-user</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <!-- ===== 模块标识信息：定义当前模块的坐标和说明 ===== -->
+    <artifactId>fribuddy-user-credential</artifactId>
+
+    <name>${project.artifactId}</name>
+    <description>用户凭证模块 - 处理用户认证凭证的签发、验证和续期相关业务逻辑</description>
+
+    <!-- ===== 模块依赖：声明当前模块所需的依赖项 ===== -->
+    <dependencies>
+        <!-- 核心共享模块 -->
+        <dependency>
+            <groupId>com.fribuddy</groupId>
+            <artifactId>fribuddy-common</artifactId>
+        </dependency>
+
+        <!-- 用户核心模块（监听账户注销事件吊销凭证） -->
+        <dependency>
+            <groupId>com.fribuddy</groupId>
+            <artifactId>fribuddy-user-core</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

@@ -106,8 +106,8 @@ create table `table_name` (
 
 - 建表 SQL 文件统一放在 `DevOps/mysql/` 目录，一表一文件，文件名为表名（如 `user_info.sql`）
 - 子目录按包名规则确定：
-  - 包名前缀为 `com.weutil.modules` 时，取下一级包名作为目录名（如 `com.weutil.modules.device.core.entity` → `device`）
-  - 包名前缀为 `com.weutil` 时，取下一级包名作为目录名（如 `com.weutil.calendar.entity` → `calendar`）
+  - 包名前缀为 `com.fribuddy.modules` 时，取下一级包名作为目录名（如 `com.fribuddy.modules.device.core.entity` → `device`）
+  - 包名前缀为 `com.fribuddy` 时，取下一级包名作为目录名（如 `com.fribuddy.calendar.entity` → `calendar`）
 
 ## MyBatis-Flex 使用规范
 

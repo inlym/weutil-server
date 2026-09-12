@@ -10,12 +10,12 @@
 # 日志配置
 logging:
     level:
-        com.weutil: DEBUG
+        com.fribuddy: DEBUG
 
 # Spring 框架配置
 spring:
     application:
-        name: "weutil-server-dev"
+        name: "fribuddy-server-dev"
 ```
 
 同一个一级属性内的子属性不使用分组注释。
@@ -28,7 +28,7 @@ spring:
 spring:
     # 应用名称，用于服务注册和监控标识
     application:
-        name: "weutil-server-dev"
+        name: "fribuddy-server-dev"
 
     # 数据源配置
     datasource:

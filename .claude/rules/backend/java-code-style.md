@@ -92,7 +92,7 @@ QueryWrapper.create()
 // ✅ 注解参数换行
 @Table(
     value = "user_info",
-    schema = "weutil"
+    schema = "fribuddy"
 )
 
 // ✅ 条件语句换行
